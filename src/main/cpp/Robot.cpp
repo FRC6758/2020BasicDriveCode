@@ -16,7 +16,7 @@
 frc::Joystick *lonelyStick;
 frc::DifferentialDrive *m_drive; 
 rev::CANSparkMax driveboi1 (1 , rev::CANSparkMax::MotorType::kBrushless);
-// rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
+//rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
 // cs::UsbCamera camera1;
 
