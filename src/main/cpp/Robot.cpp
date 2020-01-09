@@ -13,11 +13,18 @@
 
 //#include <frc/smartdashboard/SmartDashboard.h>
 
+//joystick creation
 frc::Joystick *lonelyStick;
+//tank drive creation
 frc::DifferentialDrive *m_drive; 
+//motor creation
 rev::CANSparkMax driveboi1 (1 , rev::CANSparkMax::MotorType::kBrushless);
-//rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi4 (10 , rev::CANSparkMax::MotorType::kBrushless);
+//motor groups
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 // cs::UsbCamera camera1;
 
 void Robot::RobotInit() {
@@ -31,8 +38,7 @@ void Robot::RobotInit() {
 // rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
 //rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
 
-
-  m_drive = new frc::DifferentialDrive(driveboi1 , driveboi3);
+  m_drive = new frc::DifferentialDrive( speedyboiL , speedyboiR );
 }
 
 /**
