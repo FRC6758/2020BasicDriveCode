@@ -21,9 +21,9 @@ frc::Joystick *lonelyStick;
 frc::DifferentialDrive *m_drive; 
 
 //motor creation
-rev::CANSparkMax driveboi1 (1 , rev::CANSparkMax::MotorType::kBrushless);
-rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
-rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi1 (2 , rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi2 (3 , rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi3 (1 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi4 (10 , rev::CANSparkMax::MotorType::kBrushless);
 
 //motor groups
