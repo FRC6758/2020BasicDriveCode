@@ -4,15 +4,15 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-// #include "cscore.h"
+#include "cscore.h"
 #include "Robot.h"
 #include <frc/Joystick.h>
 #include <frc/drive/differentialDrive.h>
 #include "rev/CANSparkMax.h"
 #include <iostream>
 #include <frc/SpeedControllerGroup.h>
-
-//#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <cameraserver/CameraServer.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -30,18 +30,18 @@ rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
 frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
-// cs::UsbCamera camera1;
+cs::UsbCamera fbi;
 
 void Robot::RobotInit() {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-// camera1 = cs::CameraServer::GetInstance()->StartAutomaticCapture(0);
-  //please work testing for code crashing 
- lonelyStick = new frc::Joystick(0);
-//rev::CANSparkMax driveboi1 (1 , rev::CANSparkMax::MotorType::kBrushless);
-// rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
-//rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
+  fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
+    fbi cs::VideoSource::SetResolution ( 320 , 240 );
+    fbi cs::VideoSource::SetFPS ( 20 );
+
+  lonelyStick = new frc::Joystick(0);
+
 
   thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
 }
