@@ -18,7 +18,7 @@
 frc::Joystick *lonelyStick;
 
 //tank drive creation
-frc::DifferentialDrive *m_drive; 
+frc::DifferentialDrive *thomas; 
 
 //motor creation
 rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
@@ -43,7 +43,7 @@ void Robot::RobotInit() {
 // rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
 //rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
 
-  m_drive = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+  thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
 }
 
 /**
@@ -97,7 +97,7 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
 
-m_drive->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
+thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
 
 
 }
