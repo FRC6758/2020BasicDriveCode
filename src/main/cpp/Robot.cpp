@@ -10,21 +10,26 @@
 #include <frc/drive/differentialDrive.h>
 #include "rev/CANSparkMax.h"
 #include <iostream>
+#include <frc/SpeedControllerGroup.h>
 
 //#include <frc/smartdashboard/SmartDashboard.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
+
 //tank drive creation
 frc::DifferentialDrive *m_drive; 
+
 //motor creation
 rev::CANSparkMax driveboi1 (1 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi2 (5 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi3 (10 , rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi4 (10 , rev::CANSparkMax::MotorType::kBrushless);
+
 //motor groups
-frc::SpeedControllerGroup speedyboiL { driveboi1 , driveboi2 }
-frc::SpeedControllerGroup speedyboiR { driveboi3 , driveboi4 }
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+
 // cs::UsbCamera camera1;
 
 void Robot::RobotInit() {
