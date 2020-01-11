@@ -33,7 +33,8 @@ frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 //camera creation
 cs::UsbCamera fbi;
 
-void Robot::RobotInit() {
+void Robot::RobotInit() 
+{
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -57,7 +58,8 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {
+void Robot::RobotPeriodic() 
+{
 
 
 
@@ -75,32 +77,56 @@ void Robot::RobotPeriodic() {
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-void Robot::AutonomousInit() {
+void Robot::AutonomousInit() 
+{
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_autoSelected << std::endl;
 
-  if (m_autoSelected == kAutoNameCustom) {
+  if (m_autoSelected == kAutoNameCustom) 
+  {
     // Custom Auto goes here
-  } else {
+  } 
+  else 
+  {
     // Default Auto goes here
   }
 }
 
-void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
+void Robot::AutonomousPeriodic() 
+{
+  if (m_autoSelected == kAutoNameCustom) 
+  {
     // Custom Auto goes here
-  } else {
+  } 
+  else 
+  {
     // Default Auto goes here
   }
 }
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {
+void Robot::TeleopPeriodic() 
+{
 
-thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
+// Code for deadzones on joystick
+double lonleyY = 0;
+double lonleyTwist = 0;
+double notFarEnough = .05;
+
+if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
+{
+  lonleyY = -lonelyStick->GetY();
+}
+
+if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
+{
+  lonelyStick = lonelyStick->GetTwist();
+}
+
+thomas->ArcadeDrive(lonleyY , lonleyTwist);
 
 
 }
