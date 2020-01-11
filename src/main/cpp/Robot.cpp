@@ -110,8 +110,10 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
 
 thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
-//peerPressure.Set(nuke->Get());
-peerPressure.Set(limitSwitch.Get());
+
+
+peerPressure.Set(nuke->Get() || limitSwitch.Get());
+
 
 }
 
