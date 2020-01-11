@@ -110,6 +110,7 @@ void Robot::TeleopPeriodic() {
 /*//joystick values to movement in drivetrain
 thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 
+//controller values to movement in drivetrain
 thomas->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
 
 //testing to use controller
