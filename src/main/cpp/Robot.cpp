@@ -29,14 +29,15 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 ( 1 /*2*/ , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 10 /*3*/ , rev::CANSparkMax::MotorType::kBrushless );
-/*rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );*/
+rev::CANSparkMax driveboi1 (  1 /*2*/ , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 (  10 /*3*/ , rev::CANSparkMax::MotorType::kBrushless );
+// rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+// rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 
 //motor groups
-/*frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );*/
+// frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+// frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+
 
 //camera creation
 cs::UsbCamera fbi;
@@ -44,7 +45,8 @@ frc::Solenoid peerPressure (0);
 frc::DigitalInput limitSwitch (4);
 
 
-void Robot::RobotInit() {
+void Robot::RobotInit() 
+{
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -62,9 +64,10 @@ void Robot::RobotInit() {
   lonelyStick = new frc::Joystick(0);
   nuke = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
-  thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
 
-  peerPressure.Set(false);
+  thomas = new frc::DifferentialDrive( driveboi1/*speedyboiL*/ , driveboi2/*speedyboiR*/ );
+ 
+ 
 }
 
 /**
@@ -75,7 +78,8 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {
+void Robot::RobotPeriodic() 
+{
 
 
 
@@ -93,36 +97,63 @@ void Robot::RobotPeriodic() {
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-void Robot::AutonomousInit() {
+void Robot::AutonomousInit() 
+{
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_autoSelected << std::endl;
 
-  if (m_autoSelected == kAutoNameCustom) {
+  if (m_autoSelected == kAutoNameCustom) 
+  {
     // Custom Auto goes here
-  } else {
+  } 
+  else 
+  {
     // Default Auto goes here
   }
 }
 
-void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
+void Robot::AutonomousPeriodic() 
+{
+  if (m_autoSelected == kAutoNameCustom) 
+  {
     // Custom Auto goes here
-  } else {
+  } 
+  else 
+  {
     // Default Auto goes here
   }
 }
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {
+void Robot::TeleopPeriodic() 
+{
+
+
+// Code for deadzones on joystick
+double lonelyY = 0;
+double lonelyTwist = 0;
+double notFarEnough = .05 /*todo: Adjust to driver's needs*/;
+
+if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
+{
+  lonelyY = -lonelyStick->GetY();
+}
+
+if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
+{
+  lonelyTwist = lonelyStick->GetTwist();
+}
+
+thomas->ArcadeDrive(lonelyY , lonelyTwist);
 
 /*//joystick values to movement in drivetrain
 thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 
 //controller values to movement in drivetrain
-thomas->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
+//thomas->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
 
 //testing to use controller
 /*double testingboi = neighborlyInputDevice->GetX(frc::GenericHID::JoystickHand::kLeftHand);
@@ -131,6 +162,7 @@ if ( testingboi > 0 ) {
 }*/
 
 peerPressure.Set(nuke->Get() || limitSwitch.Get());
+
 
 
 }
