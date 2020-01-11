@@ -30,20 +30,22 @@ rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
 frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
+//camera creation
 cs::UsbCamera fbi;
 
 void Robot::RobotInit() {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-  fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
-    fbi.SetResolution ( 320 , 240 );
-    fbi.SetFPS ( 10 );
-    //fbi.SetPixelFormat ( cs::VideoMode::PixelFormat::kGray );
 
+  //setting up camera
+  fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
+    fbi.SetVideoMode ( cs::VideoMode::PixelFormat::kYUYV , 320 , 240 , 10 );
+
+  //setting up joystick
   lonelyStick = new frc::Joystick(0);
 
-
+  //setting up drivetrain
   thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
 }
 
