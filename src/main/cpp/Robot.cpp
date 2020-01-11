@@ -21,7 +21,7 @@
 //joystick creation
 frc::Joystick *lonelyStick;
 frc::JoystickButton *nuke;
-
+frc::JoystickButton *oneSpin;
 //controller creation
 frc::XboxController *neighborlyInputDevice;
 
@@ -44,6 +44,10 @@ cs::UsbCamera fbi;
 frc::Solenoid peerPressure (0);
 frc::DigitalInput limitSwitch (4);
 
+//Encoder creation 
+rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
+rev::CANEncoder SpinReader2 = driveboi2.GetEncoder();
+
 
 void Robot::RobotInit() 
 {
@@ -63,6 +67,7 @@ void Robot::RobotInit()
 
   lonelyStick = new frc::Joystick(0);
   nuke = new frc::JoystickButton( lonelyStick, 3);
+  oneSpin = new frc::JoystickButton( lonelyStick, 4);
   //setting up drivetrain
 
   thomas = new frc::DifferentialDrive( driveboi1/*speedyboiL*/ , driveboi2/*speedyboiR*/ );
@@ -131,6 +136,26 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() 
 {
 
+//Read Encoder
+frc::SmartDashboard::PutNumber("Encoder Position", spinReader1.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder Position", spinReader2.GetPosition());
+
+//this is the math for distance eventualy 
+double *currentRotations1;
+double *currentRotations2; 
+
+double rotations1 = spinReader1.GetPosition();
+double rotations2 = SpinReader2.GetPosition(); 
+if(spinReader1.GetVelocity() == 0)
+{
+  currentRotations1 = rotations1;
+}
+if(SpinReader2.GetVelocity() == 0)
+{
+  currentRotations2 = rotations2;
+}
+
+if() 
 
 // Code for deadzones on joystick
 double lonelyY = 0;
