@@ -37,8 +37,9 @@ void Robot::RobotInit() {
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
-    fbi cs::VideoSource::SetResolution ( 320 , 240 );
-    fbi cs::VideoSource::SetFPS ( 20 );
+    fbi.SetResolution ( 320 , 240 );
+    fbi.SetFPS ( 10 );
+    //fbi.SetPixelFormat ( cs::VideoMode::PixelFormat::kGray );
 
   lonelyStick = new frc::Joystick(0);
 
