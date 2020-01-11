@@ -7,15 +7,19 @@
 #include "cscore.h"
 #include "Robot.h"
 #include <frc/Joystick.h>
+#include <frc/Buttons/JoystickButton.h>
 #include <frc/drive/differentialDrive.h>
 #include "rev/CANSparkMax.h"
 #include <iostream>
 #include <frc/SpeedControllerGroup.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <cameraserver/CameraServer.h>
+#include <frc/Solenoid.h>
+#include <frc/DigitalInput.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
+frc::JoystickButton *nuke;
 
 //tank drive creation
 frc::DifferentialDrive *thomas; 
@@ -32,6 +36,9 @@ frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
 //camera creation
 cs::UsbCamera fbi;
+frc::Solenoid peerPressure (0);
+frc::DigitalInput limitSwitch (4);
+
 
 void Robot::RobotInit() {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -44,9 +51,11 @@ void Robot::RobotInit() {
 
   //setting up joystick
   lonelyStick = new frc::Joystick(0);
-
+  nuke = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
   thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+
+  peerPressure.Set(false);
 }
 
 /**
@@ -101,6 +110,9 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
 
 thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
+
+
+peerPressure.Set(nuke->Get() || limitSwitch.Get());
 
 
 }
