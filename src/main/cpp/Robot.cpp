@@ -14,6 +14,7 @@
 #include <frc/SpeedControllerGroup.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <cameraserver/CameraServer.h>
+#include <frc/XboxController.h>
 #include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
 
@@ -21,18 +22,21 @@
 frc::Joystick *lonelyStick;
 frc::JoystickButton *nuke;
 
+//controller creation
+frc::XboxController *neighborlyInputDevice;
+
 //tank drive creation
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 1 /*2*/ , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 10 /*3*/ , rev::CANSparkMax::MotorType::kBrushless );
+/*rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );*/
 
 //motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+/*frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );*/
 
 //camera creation
 cs::UsbCamera fbi;
@@ -50,6 +54,11 @@ void Robot::RobotInit() {
     fbi.SetVideoMode ( cs::VideoMode::PixelFormat::kYUYV , 320 , 240 , 10 );
 
   //setting up joystick
+  lonelyStick = new frc::Joystick ( 1 );
+
+  //setting up controller
+  neighborlyInputDevice = new frc::XboxController ( 0 );
+
   lonelyStick = new frc::Joystick(0);
   nuke = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
@@ -109,8 +118,17 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
 
-thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
+/*//joystick values to movement in drivetrain
+thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 
+//controller values to movement in drivetrain
+thomas->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
+
+//testing to use controller
+/*double testingboi = neighborlyInputDevice->GetX(frc::GenericHID::JoystickHand::kLeftHand);
+if ( testingboi > 0 ) {
+  std::cout << "x axis is goin \n";
+}*/
 
 peerPressure.Set(nuke->Get() || limitSwitch.Get());
 
