@@ -46,7 +46,13 @@ frc::DigitalInput limitSwitch (4);
 
 //Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
-rev::CANEncoder SpinReader2 = driveboi2.GetEncoder();
+rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
+
+//Dead Zone Variables
+double lonelyY = 0;
+double lonelyTwist = 0;
+double notFarEnough = .05 /*todo: Adjust to driver's needs*/;
+
 
 
 void Robot::RobotInit() 
@@ -136,31 +142,17 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() 
 {
 
+
+//42 counts per rev. on neo
+if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
+if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
+
 //Read Encoder
-frc::SmartDashboard::PutNumber("Encoder Position", spinReader1.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder Position", spinReader2.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 
-//this is the math for distance eventualy 
-double *currentRotations1;
-double *currentRotations2; 
-
-double rotations1 = spinReader1.GetPosition();
-double rotations2 = SpinReader2.GetPosition(); 
-if(spinReader1.GetVelocity() == 0)
-{
-  currentRotations1 = rotations1;
-}
-if(SpinReader2.GetVelocity() == 0)
-{
-  currentRotations2 = rotations2;
-}
-
-if() 
 
 // Code for deadzones on joystick
-double lonelyY = 0;
-double lonelyTwist = 0;
-double notFarEnough = .05 /*todo: Adjust to driver's needs*/;
 
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
 {
@@ -172,7 +164,7 @@ if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarE
   lonelyTwist = lonelyStick->GetTwist();
 }
 
-thomas->ArcadeDrive(lonelyY , lonelyTwist);
+thomas->ArcadeDrive(lonelyY *.2 , lonelyTwist * .2);
 
 /*//joystick values to movement in drivetrain
 thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
@@ -192,7 +184,19 @@ peerPressure.Set(nuke->Get() || limitSwitch.Get());
 
 }
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+//Motor spins once with Joystick button
+
+if (spinReader1.GetPosition() < .9) driveboi1.Set(.015);
+//if (oneSpin->Get()) spinReader1.SetPosition(0);
+//if (spinReader1.GetPosition() < 1) driveboi1.Set(.015);
+else driveboi1.Set(0);
+if (oneSpin->Get()) spinReader1.SetPosition(0);
+
+
+
+
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
