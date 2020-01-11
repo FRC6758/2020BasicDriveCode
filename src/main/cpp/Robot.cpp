@@ -21,14 +21,14 @@ frc::Joystick *lonelyStick;
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 (  1 /*2*/ , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 (  10 /*3*/ , rev::CANSparkMax::MotorType::kBrushless );
+// rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+// rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 
 //motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+// frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+// frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
 //camera creation
 cs::UsbCamera fbi;
@@ -47,7 +47,7 @@ void Robot::RobotInit()
   lonelyStick = new frc::Joystick(0);
 
   //setting up drivetrain
-  thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+  thomas = new frc::DifferentialDrive( driveboi1/*speedyboiL*/ , driveboi2/*speedyboiR*/ );
 }
 
 /**
@@ -112,21 +112,21 @@ void Robot::TeleopPeriodic()
 {
 
 // Code for deadzones on joystick
-double lonleyY = 0;
-double lonleyTwist = 0;
-double notFarEnough = .05;
+double lonelyY = 0;
+double lonelyTwist = 0;
+double notFarEnough = .05 /* Adjust to driver's needs*/;
 
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
 {
-  lonleyY = -lonelyStick->GetY();
+  lonelyY = -lonelyStick->GetY();
 }
 
 if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
 {
-  lonelyStick = lonelyStick->GetTwist();
+  lonelyTwist = lonelyStick->GetTwist();
 }
 
-thomas->ArcadeDrive(lonleyY , lonleyTwist);
+thomas->ArcadeDrive(lonelyY , lonelyTwist);
 
 
 }
