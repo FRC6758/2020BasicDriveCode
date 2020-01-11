@@ -15,6 +15,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <cameraserver/CameraServer.h>
 #include <frc/Solenoid.h>
+#include <frc/DigitalInput.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -36,6 +37,8 @@ frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 //camera creation
 cs::UsbCamera fbi;
 frc::Solenoid peerPressure (0);
+frc::DigitalInput limitSwitch (4);
+
 
 void Robot::RobotInit() {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -51,6 +54,8 @@ void Robot::RobotInit() {
   nuke = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
   thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+
+  peerPressure.Set(false);
 }
 
 /**
@@ -105,7 +110,8 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
 
 thomas->ArcadeDrive(-lonelyStick->GetY() , lonelyStick->GetTwist() );
-peerPressure.Set(nuke->Get());
+//peerPressure.Set(nuke->Get());
+peerPressure.Set(limitSwitch.Get());
 
 }
 
