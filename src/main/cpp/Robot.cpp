@@ -20,8 +20,8 @@
 
 //joystick creation
 frc::Joystick *lonelyStick;
-frc::JoystickButton *nuke;
-frc::JoystickButton *oneSpin;
+frc::JoystickButton *nuke; //button 3
+frc::JoystickButton *oneSpin; //button 4
 //controller creation
 frc::XboxController *neighborlyInputDevice;
 
@@ -29,24 +29,30 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 (  1 /*2*/ , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 (  10 /*3*/ , rev::CANSparkMax::MotorType::kBrushless );
-// rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-// rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 
 //motor groups
-// frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-// frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
 
 //camera creation
 cs::UsbCamera fbi;
+
+//sonlenoid creation
 frc::Solenoid peerPressure (0);
+
+//limit switch creation
 frc::DigitalInput limitSwitch (4);
 
 //Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
+rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
+rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 
 //Dead Zone Variables
 double lonelyY = 0;
@@ -76,7 +82,7 @@ void Robot::RobotInit()
   oneSpin = new frc::JoystickButton( lonelyStick, 4);
   //setting up drivetrain
 
-  thomas = new frc::DifferentialDrive( driveboi1/*speedyboiL*/ , driveboi2/*speedyboiR*/ );
+  thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
  
  
 }
@@ -127,14 +133,18 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic() 
 {
-  if (m_autoSelected == kAutoNameCustom) 
+  driveboi2.Follow (driveboi1, /*invert*/ false);
+  driveboi4.Follow (driveboi3, /*invert*/ false);
+
+  /*if (m_autoSelected == kAutoNameCustom) 
   {
     // Custom Auto goes here
+
   } 
   else 
   {
     // Default Auto goes here
-  }
+  }*/
 }
 
 void Robot::TeleopInit() {}
@@ -146,11 +156,14 @@ void Robot::TeleopPeriodic()
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
+if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
+if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
-
+frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 
 // Code for deadzones on joystick
 
@@ -185,15 +198,23 @@ peerPressure.Set(nuke->Get() || limitSwitch.Get());
 }
 
 void Robot::TestPeriodic() {
+//back motors following front motors
+driveboi2.Follow (driveboi1, /*invert*/ false);
+driveboi4.Follow (driveboi3, /*invert*/ false);
+
 //Motor spins once with Joystick button
-
 if (spinReader1.GetPosition() < .9) driveboi1.Set(.015);
-//if (oneSpin->Get()) spinReader1.SetPosition(0);
-//if (spinReader1.GetPosition() < 1) driveboi1.Set(.015);
 else driveboi1.Set(0);
-if (oneSpin->Get()) spinReader1.SetPosition(0);
 
+if (spinReader3.GetPosition() < .9) driveboi3.Set(.015);
+else driveboi3.Set(0);
 
+if (oneSpin->Get()) {
+  spinReader1.SetPosition(0);
+  spinReader3.SetPosition(0);
+}
+
+//motor group = -.99^-encoder value
 
 
 }
