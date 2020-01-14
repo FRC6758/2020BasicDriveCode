@@ -133,8 +133,8 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic() 
 {
-  driveboi2.Follow (driveboi1, /*invert*/ false);
-  driveboi4.Follow (driveboi3, /*invert*/ false);
+  //driveboi2.Follow (driveboi1, /*invert*/ false);
+  //driveboi4.Follow (driveboi3, /*invert*/ false);
 
   /*if (m_autoSelected == kAutoNameCustom) 
   {
@@ -203,10 +203,10 @@ driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 
 //Motor spins once with Joystick button
-if (spinReader1.GetPosition() < .9) driveboi1.Set(.015);
+if (spinReader1.GetPosition() < 10) driveboi1.Set(.5);
 else driveboi1.Set(0);
 
-if (spinReader3.GetPosition() < .9) driveboi3.Set(.015);
+if (spinReader3.GetPosition() > -10) driveboi3.Set(-.5);
 else driveboi3.Set(0);
 
 if (oneSpin->Get()) {
