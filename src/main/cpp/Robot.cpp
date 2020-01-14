@@ -203,10 +203,12 @@ driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 
 //Motor spins once with Joystick button
-if (spinReader1.GetPosition() < 10) driveboi1.Set(.5);
+if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
+//if (spinReader1.GetPosition() < 10) driveboi1.Set(.99^spinReader1.GetPosition());
 else driveboi1.Set(0);
 
-if (spinReader3.GetPosition() > -10) driveboi3.Set(-.5);
+if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
+//if (spinReader3.GetPosition() > -10) driveboi3.Set(-.99^spinReader3.GetPosition());
 else driveboi3.Set(0);
 
 if (oneSpin->Get()) {
@@ -214,9 +216,11 @@ if (oneSpin->Get()) {
   spinReader3.SetPosition(0);
 }
 
-//motor group = -.99^-encoder value
-
-
+/*motor group = .99^encoder value
+motor group = -.99^encoder value
+make sure the opposite encoder stuff is the opposite otherwise as it counts up it will keep getting faster/ need two different equations
+driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
+*/
 }
 
 #ifndef RUNNING_FRC_TESTS
