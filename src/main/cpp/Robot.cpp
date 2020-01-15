@@ -55,6 +55,8 @@ rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
+//rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
+//rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 
 //Dead Zone Variables
 double lonelyY = 0;
@@ -160,25 +162,26 @@ if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
 if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
 if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
+//if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
+//if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
+//frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
+//frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 
 // Code for deadzones on joystick
-
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
 {
   lonelyY = -lonelyStick->GetY();
 }
-
 if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
 {
   lonelyTwist = lonelyStick->GetTwist();
 }
-
 thomas->ArcadeDrive(lonelyY *.2 , lonelyTwist * .2);
 
 /*//joystick values to movement in drivetrain
@@ -195,14 +198,14 @@ if ( testingboi > 0 ) {
 
 peerPressure.Set(nuke->Get() || limitSwitch.Get());
 
-
-
 }
 
 void Robot::TestPeriodic() {
 //back motors following front motors
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
+//driveboi5.Follow (driveboi1, /*invert*/ false);
+//driveboi6.Follow (driveboi3, /*invert*/ false);
 
 //Motor spins once with Joystick button
 if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
