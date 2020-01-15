@@ -33,10 +33,12 @@ rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+//rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
+//rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
 
 //motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 /*, driveboi5*/ );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 /*, driveboi6*/ );
 
 
 //camera creation
