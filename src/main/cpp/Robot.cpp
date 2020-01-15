@@ -17,6 +17,7 @@
 #include <frc/XboxController.h>
 #include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
+#include <cmath>
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -208,12 +209,14 @@ driveboi4.Follow (driveboi3, /*invert*/ false);
 //driveboi6.Follow (driveboi3, /*invert*/ false);
 
 //Motor spins once with Joystick button
-if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
-//if (spinReader1.GetPosition() < 10) driveboi1.Set(.99^spinReader1.GetPosition());
+//if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
+if (spinReader1.GetPosition() < 8) driveboi1.Set(pow( -.99 , -spinReader1.GetPosition() )+2 );
+else if (spinReader1.GetPosition() > 8 && spinReader3.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
 else driveboi1.Set(0);
 
-if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
-//if (spinReader3.GetPosition() > -10) driveboi3.Set(-.99^spinReader3.GetPosition());
+//if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
+if (spinReader3.GetPosition() > -8 ) driveboi3.Set(-.25);
+else if (spinReader3.GetPosition() < -8 && spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
 
 if (oneSpin->Get()) {
