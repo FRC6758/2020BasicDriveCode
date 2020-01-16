@@ -34,17 +34,17 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
+//rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
+//rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
 
 
 //motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 /*, driveboi5*/ );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 /*, driveboi6*/ );
 
 //camera creation
 cs::UsbCamera fbi;
@@ -67,8 +67,8 @@ rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
-rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
-rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
+//rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
+//rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 
 //Dead Zone Variables
 double lonelyY;
@@ -179,16 +179,16 @@ if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
 if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
 if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
-if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
-if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
+//if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
+//if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
+//frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
+//frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 
 // Code for deadzones on joystick
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
@@ -225,11 +225,14 @@ if ( testingboi > 0 ) {
 void Robot::TestPeriodic() {
 
 
+
+
+
 //back motors following front motors
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
-driveboi5.Follow (driveboi1, /*invert*/ false);
-driveboi6.Follow (driveboi3, /*invert*/ false);
+//driveboi5.Follow (driveboi1, /*invert*/ false);
+//driveboi6.Follow (driveboi3, /*invert*/ false);
 
 r = 23;
 
