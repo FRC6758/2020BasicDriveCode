@@ -18,12 +18,15 @@
 #include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
 #include <cmath>
-#include <Compressor.h>
+#include <frc/Compressor.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
-frc::JoystickButton *nuke; //button 3
+frc::JoystickButton *nuke; //button 6
 frc::JoystickButton *oneSpin; //button 4
+frc::JoystickButton *lessSpeed; //button 5
+frc::JoystickButton *moreSpeed; //button 3
+
 //controller creation
 frc::XboxController *neighborlyInputDevice;
 
@@ -50,7 +53,8 @@ cs::UsbCamera fbi;
 int r;
 
 //sonlenoid creation
-frc::Solenoid peerPressure (0);
+frc::Solenoid peerPressure1 (0);
+frc::Solenoid peerPressure2 (1);
 
 //compressor creation
 frc::Compressor bonusPressure (0);
@@ -80,7 +84,7 @@ void Robot::RobotInit()
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   //compressure control
-  bonusPressure.frc::Compressor::SetClosedLoopControl(on);
+  bonusPressure.frc::Compressor::SetClosedLoopControl(true);
 
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
@@ -93,8 +97,10 @@ void Robot::RobotInit()
   neighborlyInputDevice = new frc::XboxController ( 0 );
 
   lonelyStick = new frc::Joystick(0);
-  nuke = new frc::JoystickButton( lonelyStick, 3);
+  nuke = new frc::JoystickButton( lonelyStick, 6);
   oneSpin = new frc::JoystickButton( lonelyStick, 4);
+  lessSpeed = new frc::JoystickButton( lonelyStick, 5);
+  moreSpeed = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
 
   thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
@@ -193,6 +199,11 @@ if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarE
 {
   lonelyTwist = lonelyStick->GetTwist();
 }
+//gearbox shifting code
+peerPressure1.Set(lessSpeed->Get());
+peerPressure2.Set(moreSpeed->Get());
+
+//drive train code
 thomas->ArcadeDrive(lonelyY *.4 , lonelyTwist * .4);
 
 /*//joystick values to movement in drivetrain
@@ -207,7 +218,7 @@ if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
 
-peerPressure.Set(nuke->Get() || limitSwitch.Get());
+//peerPressure1.Set(nuke->Get() || limitSwitch.Get());
 
 }
 
