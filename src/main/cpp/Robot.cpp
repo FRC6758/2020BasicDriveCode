@@ -18,6 +18,7 @@
 #include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
 #include <cmath>
+#include <Compressor.h>
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -51,6 +52,9 @@ int r;
 //sonlenoid creation
 frc::Solenoid peerPressure (0);
 
+//compressor creation
+frc::Compressor bonusPressure (0);
+
 //limit switch creation
 frc::DigitalInput limitSwitch (4);
 
@@ -74,6 +78,9 @@ void Robot::RobotInit()
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  //compressure control
+  bonusPressure.frc::Compressor::SetClosedLoopControl(on);
 
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
@@ -219,19 +226,20 @@ r = 23;
 
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
-if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
+if (spinReader1.GetPosition() < 0) driveboi1.Set(.1);
+else if (spinReader1.GetPosition() > 0 ) driveboi1.Set(-.1);
 //else if (spinReader1.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
 else driveboi1.Set(0);
 
 //if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
-if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
+if (spinReader3.GetPosition() > 0 ) driveboi3.Set(-.1);
+else if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
-std::cout << "Reached here";
+
 if (oneSpin->Get()) {
-  std::cout << "it worked";
-  spinReader1.SetPosition(0);
-  spinReader3.SetPosition(0);
+  spinReader1.SetPosition(-r);
+  spinReader3.SetPosition(r);
 }
 
 //nuke button code
