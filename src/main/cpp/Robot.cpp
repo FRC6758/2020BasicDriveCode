@@ -34,16 +34,27 @@ rev::CANSparkMax driveboi1 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
-//rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
-//rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi7 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi8 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi9 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi10 ( 11 , rev::CANSparkMax::MotorType::kBrushless );
 
-//motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 /*, driveboi5*/ );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 /*, driveboi6*/ );
 
+//motor groups axel
+//frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
+//frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );
+
+//New Robot motor groups
+frc::SpeedControllerGroup speedyboiL ( driveboi7 , driveboi8 , driveboi9 );
+frc::SpeedControllerGroup speedyboiR ( driveboi11 , driveboi5 , driveboi6 );
 
 //camera creation
 cs::UsbCamera fbi;
+
+//revolution var
+int r;
 
 //sonlenoid creation
 frc::Solenoid peerPressure (0);
@@ -60,8 +71,8 @@ rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 //rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 
 //Dead Zone Variables
-double lonelyY = 0;
-double lonelyTwist = 0;
+double lonelyY;
+double lonelyTwist;
 double notFarEnough = .05 /*todo: Adjust to driver's needs*/;
 
 
@@ -183,7 +194,7 @@ if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarE
 {
   lonelyTwist = lonelyStick->GetTwist();
 }
-thomas->ArcadeDrive(lonelyY *.2 , lonelyTwist * .2);
+thomas->ArcadeDrive(lonelyY *.4 , lonelyTwist * .4);
 
 /*//joystick values to movement in drivetrain
 thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
@@ -202,27 +213,51 @@ peerPressure.Set(nuke->Get() || limitSwitch.Get());
 }
 
 void Robot::TestPeriodic() {
+
+
 //back motors following front motors
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 //driveboi5.Follow (driveboi1, /*invert*/ false);
 //driveboi6.Follow (driveboi3, /*invert*/ false);
 
+r = 23;
+
+
+
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
-if (spinReader1.GetPosition() < 8) driveboi1.Set(pow( -.99 , -spinReader1.GetPosition() )+2 );
-else if (spinReader1.GetPosition() > 8 && spinReader3.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
+if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
+//else if (spinReader1.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
 else driveboi1.Set(0);
 
 //if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
-if (spinReader3.GetPosition() > -8 ) driveboi3.Set(-.25);
-else if (spinReader3.GetPosition() < -8 && spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
+if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
+//else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
-
+std::cout << "Reached here";
 if (oneSpin->Get()) {
+  std::cout << "it worked";
   spinReader1.SetPosition(0);
   spinReader3.SetPosition(0);
 }
+
+//nuke button code
+
+if (nuke->Get()) {
+  spinReader1.SetPosition(r);
+  spinReader3.SetPosition(-r);
+}
+
+if (spinReader1.GetPosition() > 0) driveboi1.Set(-.1);
+else driveboi1.Set(0);
+
+if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
+else driveboi3.Set(0);
+
+
+
+
 
 /*motor group = .99^encoder value
 motor group = -.99^encoder value
