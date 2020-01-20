@@ -235,9 +235,17 @@ driveboi4.Follow (driveboi3, /*invert*/ false);
 //driveboi6.Follow (driveboi3, /*invert*/ false);
 
 r = 23;
+if (oneSpin->Get()) {
+  spinReader1.SetPosition(-r);
+  spinReader3.SetPosition(r);
+}
+if (nuke->Get()) {
+  spinReader1.SetPosition(r);
+  spinReader3.SetPosition(-r);
+}
 
 
-
+/*
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
 if (spinReader1.GetPosition() < 0) driveboi1.Set(.1);
@@ -250,23 +258,19 @@ if (spinReader3.GetPosition() > 0 ) driveboi3.Set(-.1);
 else if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
+*/
 
-if (oneSpin->Get()) {
-  spinReader1.SetPosition(-r);
-  spinReader3.SetPosition(r);
-}
 
 //nuke button code
 
-if (nuke->Get()) {
-  spinReader1.SetPosition(r);
-  spinReader3.SetPosition(-r);
-}
+
 
 if (spinReader1.GetPosition() > 0) driveboi1.Set(-.1);
+else if (spinReader1.GetPosition() < 0) driveboi1.Set(.1);
 else driveboi1.Set(0);
 
 if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
+else if (spinReader3.GetPosition() > 0) driveboi3.Set(-.1);
 else driveboi3.Set(0);
 
 
