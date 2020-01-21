@@ -19,6 +19,7 @@
 #include <frc/DigitalInput.h>
 #include <cmath>
 #include <frc/Compressor.h>
+#include <frc/AnalogInput.h>
 
 
 //joystick creation
@@ -35,21 +36,33 @@ frc::XboxController *neighborlyInputDevice;
 //tank drive creation
 frc::DifferentialDrive *thomas; 
 
-//motor creation
+//thomas motors
+/*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+
+//thomas motor groups
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );*/
+
+//axel motors
 rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-//rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
-//rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
 
-
-//motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 /*, driveboi5*/ );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 /*, driveboi6*/ );
+//axel motor croups
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
 
 //camera creation
 cs::UsbCamera fbi;
+
+//ultrasonic range sensor creation
+frc::AnalogInput germans (0);
 
 //revolution var
 int r;
@@ -196,6 +209,9 @@ frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 //frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
 //frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
+
+//read sensor
+frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetValue());
 
 // Code for deadzones on joystick
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
