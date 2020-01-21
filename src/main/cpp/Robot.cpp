@@ -211,7 +211,7 @@ frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 //frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 
 //read sensor
-frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetValue());
+frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
 
 // Code for deadzones on joystick
 if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
