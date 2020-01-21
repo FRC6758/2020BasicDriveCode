@@ -20,12 +20,14 @@
 #include <cmath>
 #include <frc/Compressor.h>
 
+
 //joystick creation
 frc::Joystick *lonelyStick;
 frc::JoystickButton *nuke; //button 6
 frc::JoystickButton *oneSpin; //button 4
 frc::JoystickButton *lessSpeed; //button 5
 frc::JoystickButton *moreSpeed; //button 3
+frc::JoystickButton *fullCheech; //button 1
 
 //controller creation
 frc::XboxController *neighborlyInputDevice;
@@ -34,10 +36,10 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *thomas; 
 
 //motor creation
-rev::CANSparkMax driveboi1 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 //rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
 //rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
 
@@ -51,6 +53,10 @@ cs::UsbCamera fbi;
 
 //revolution var
 int r;
+//encoder - encoder
+double a;
+//speed var
+double speed;
 
 //sonlenoid creation
 frc::Solenoid peerPressure1 (0);
@@ -99,6 +105,7 @@ void Robot::RobotInit()
   lonelyStick = new frc::Joystick(0);
   nuke = new frc::JoystickButton( lonelyStick, 6);
   oneSpin = new frc::JoystickButton( lonelyStick, 4);
+  fullCheech = new frc::JoystickButton( lonelyStick, 1);
   lessSpeed = new frc::JoystickButton( lonelyStick, 5);
   moreSpeed = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
@@ -204,7 +211,12 @@ peerPressure1.Set(lessSpeed->Get());
 peerPressure2.Set(moreSpeed->Get());
 
 //drive train code
-thomas->ArcadeDrive(lonelyY *.4 , lonelyTwist * .4);
+if (fullCheech->Get()) {
+  speed = 1;
+ } else {
+  speed = .4;
+ }
+thomas->ArcadeDrive(lonelyY *speed , lonelyTwist * speed);
 
 /*//joystick values to movement in drivetrain
 thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
@@ -220,6 +232,7 @@ if ( testingboi > 0 ) {
 
 //peerPressure1.Set(nuke->Get() || limitSwitch.Get());
 
+
 }
 
 void Robot::TestPeriodic() {
@@ -234,48 +247,40 @@ driveboi4.Follow (driveboi3, /*invert*/ false);
 //driveboi5.Follow (driveboi1, /*invert*/ false);
 //driveboi6.Follow (driveboi3, /*invert*/ false);
 
-r = 23;
+//encoder math
+a = spinReader1.GetPosition() - spinReader3.GetPosition();
+r = 23; //23 = 5 ft
+
 if (oneSpin->Get()) {
-  spinReader1.SetPosition(-r);
-  spinReader3.SetPosition(r);
-}
-if (nuke->Get()) {
-  spinReader1.SetPosition(r);
-  spinReader3.SetPosition(-r);
-}
-
-
+  driveboi1.Set(.1);
+  driveboi3.Set(-.1);
+} else if (nuke->Get()) {
+  driveboi1.Set(-.1);
+  driveboi3.Set(.1);
+} else if ( a < -2*r || a > 2*r ) {
+  driveboi1.Set(0);
+  driveboi3.Set(0);
+  spinReader1.SetPosition(0);
+  spinReader2.SetPosition(0);
+  spinReader3.SetPosition(0);
+  spinReader4.SetPosition(0);
+  }
 /*
+
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
-if (spinReader1.GetPosition() < 0) driveboi1.Set(.1);
-else if (spinReader1.GetPosition() > 0 ) driveboi1.Set(-.1);
+if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
+else if (spinReader1.GetPosition() > r) driveboi1.Set(-.1);
 //else if (spinReader1.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
 else driveboi1.Set(0);
 
 //if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
-if (spinReader3.GetPosition() > 0 ) driveboi3.Set(-.1);
-else if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
+if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
+else if (spinReader3.GetPosition() < -r) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
+
 */
-
-
-//nuke button code
-
-
-
-if (spinReader1.GetPosition() > 0) driveboi1.Set(-.1);
-else if (spinReader1.GetPosition() < 0) driveboi1.Set(.1);
-else driveboi1.Set(0);
-
-if (spinReader3.GetPosition() < 0 ) driveboi3.Set(.1);
-else if (spinReader3.GetPosition() > 0) driveboi3.Set(-.1);
-else driveboi3.Set(0);
-
-
-
-
 
 /*motor group = .99^encoder value
 motor group = -.99^encoder value
