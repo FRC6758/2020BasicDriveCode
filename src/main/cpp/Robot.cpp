@@ -24,11 +24,12 @@
 
 //joystick creation
 frc::Joystick *lonelyStick;
-frc::JoystickButton *nuke; //button 6
-frc::JoystickButton *oneSpin; //button 4
+frc::JoystickButton *nuke; //button 4
+frc::JoystickButton *oneSpin; //button 6
 frc::JoystickButton *lessSpeed; //button 5
 frc::JoystickButton *moreSpeed; //button 3
-frc::JoystickButton *fullCheech; //button 1
+frc::JoystickButton *fullCheech; //button 2
+frc::JoystickButton *putItIn; //button 1
 
 //controller creation
 frc::XboxController *neighborlyInputDevice;
@@ -74,6 +75,7 @@ double speed;
 //sonlenoid creation
 frc::Solenoid peerPressure1 (0);
 frc::Solenoid peerPressure2 (1);
+frc::Solenoid roboMyRio (2);
 
 //compressor creation
 frc::Compressor bonusPressure (0);
@@ -116,11 +118,12 @@ void Robot::RobotInit()
   neighborlyInputDevice = new frc::XboxController ( 0 );
 
   lonelyStick = new frc::Joystick(0);
-  nuke = new frc::JoystickButton( lonelyStick, 6);
-  oneSpin = new frc::JoystickButton( lonelyStick, 4);
-  fullCheech = new frc::JoystickButton( lonelyStick, 1);
+  nuke = new frc::JoystickButton( lonelyStick, 4);
+  oneSpin = new frc::JoystickButton( lonelyStick, 6);
+  fullCheech = new frc::JoystickButton( lonelyStick, 2);
   lessSpeed = new frc::JoystickButton( lonelyStick, 5);
   moreSpeed = new frc::JoystickButton( lonelyStick, 3);
+  putItIn = new frc::JoystickButton( lonelyStick, 1);
   //setting up drivetrain
 
   brit = new frc::DifferentialDrive( speedyboiL , speedyboiR );
@@ -241,6 +244,9 @@ if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarE
 peerPressure1.Set(lessSpeed->Get());
 peerPressure2.Set(moreSpeed->Get());
 
+//pneumatic actuator
+roboMyRio.set(putItIn->Get());
+
 //drive train code
 if (fullCheech->Get()) {
   speed = 1;
@@ -288,6 +294,12 @@ if (oneSpin->Get()) {
 } else if (nuke->Get()) {
   driveboi1.Set(-.1);
   driveboi3.Set(.1);
+  else if (moreSpeed->Get()) {
+  driveboi1.Set(.1);
+  driveboi3.Set(.1);
+} else if (lessSpeed->Get()) {
+  driveboi1.Set(-.1);
+  driveboi3.Set(-.1);
 } else if ( a < -2*r || a > 2*r ) {
   driveboi1.Set(0);
   driveboi3.Set(0);
