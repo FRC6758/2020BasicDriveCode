@@ -67,8 +67,11 @@ frc::AnalogInput germans (0);
 
 //revolution var
 int r;
+int s;
 //encoder - encoder
 double a;
+//encoder + encoder
+double b;
 //speed var
 double speed;
 
@@ -245,7 +248,7 @@ peerPressure1.Set(lessSpeed->Get());
 peerPressure2.Set(moreSpeed->Get());
 
 //pneumatic actuator
-roboMyRio.set(putItIn->Get());
+roboMyRio.Set(putItIn->Get());
 
 //drive train code
 if (fullCheech->Get()) {
@@ -286,7 +289,9 @@ driveboi4.Follow (driveboi3, /*invert*/ false);
 
 //encoder math
 a = spinReader1.GetPosition() - spinReader3.GetPosition();
+b = spinReader1.GetPosition() + spinReader3.GetPosition();
 r = 23; //23 = 5 ft
+s = 25; //30? = 360 degrees
 
 if (oneSpin->Get()) {
   driveboi1.Set(.1);
@@ -294,13 +299,13 @@ if (oneSpin->Get()) {
 } else if (nuke->Get()) {
   driveboi1.Set(-.1);
   driveboi3.Set(.1);
-  else if (moreSpeed->Get()) {
-  driveboi1.Set(.1);
-  driveboi3.Set(.1);
-} else if (lessSpeed->Get()) {
+} else if (moreSpeed->Get()) {
   driveboi1.Set(-.1);
   driveboi3.Set(-.1);
-} else if ( a < -2*r || a > 2*r ) {
+} else if (lessSpeed->Get()) {
+  driveboi1.Set(.1);
+  driveboi3.Set(.1);
+} else if ( a < -2*r || a > 2*r || b < -2*s || b > 2*s ) {
   driveboi1.Set(0);
   driveboi3.Set(0);
   spinReader1.SetPosition(0);
