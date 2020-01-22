@@ -34,9 +34,9 @@ frc::JoystickButton *fullCheech; //button 1
 frc::XboxController *neighborlyInputDevice;
 
 //tank drive creation
-frc::DifferentialDrive *thomas; 
+frc::DifferentialDrive *brit; 
 
-//thomas motors
+//brit motors
 /*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
@@ -44,7 +44,7 @@ rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
 
-//thomas motor groups
+//brit motor groups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
 frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );*/
 
@@ -123,7 +123,7 @@ void Robot::RobotInit()
   moreSpeed = new frc::JoystickButton( lonelyStick, 3);
   //setting up drivetrain
 
-  thomas = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+  brit = new frc::DifferentialDrive( speedyboiL , speedyboiR );
  
  
 }
@@ -162,14 +162,14 @@ void Robot::AutonomousInit()
   //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_autoSelected << std::endl;
 
-  if (m_autoSelected == kAutoNameCustom) 
+  /*if (m_autoSelected == kAutoNameCustom) 
   {
     // Custom Auto goes here
   } 
   else 
   {
     // Default Auto goes here
-  }
+  }*/
 }
 
 void Robot::AutonomousPeriodic() 
@@ -186,6 +186,21 @@ void Robot::AutonomousPeriodic()
   {
     // Default Auto goes here
   }*/
+
+
+      //auton idea
+
+        /*go forward until limit switch hits wall or range gets to very low
+        dumb balls
+        go backward until across the line
+        turn tward wall
+        go forward until limit switch hits wall or range gets to very low
+        back up a little
+        turn 90 degrees twards our side
+        turn on intake things
+        go forward under the trench*/
+
+
 }
 
 void Robot::TeleopInit() {}
@@ -232,13 +247,13 @@ if (fullCheech->Get()) {
  } else {
   speed = .4;
  }
-thomas->ArcadeDrive(lonelyY *speed , lonelyTwist * speed);
+brit->ArcadeDrive(lonelyY *speed , lonelyTwist * speed);
 
 /*//joystick values to movement in drivetrain
-thomas->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
+brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 
 //controller values to movement in drivetrain
-//thomas->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
+//brit->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
 
 //testing to use controller
 /*double testingboi = neighborlyInputDevice->GetX(frc::GenericHID::JoystickHand::kLeftHand);
