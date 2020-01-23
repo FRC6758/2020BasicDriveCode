@@ -84,7 +84,7 @@ frc::Solenoid roboMyRio (2);
 frc::Compressor bonusPressure (0);
 
 //limit switch creation
-frc::DigitalInput limitSwitch (4);
+frc::DigitalInput stopIt (4);
 
 //Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -196,15 +196,24 @@ void Robot::AutonomousPeriodic()
 
       //auton idea
 
-        /*go forward until limit switch hits wall or range gets to very low
-        dumb balls
-        go backward until across the line
-        turn tward wall
-        go forward until limit switch hits wall or range gets to very low
-        back up a little
-        turn 90 degrees twards our side
-        turn on intake things
-        go forward under the trench*/
+        //go forward until limit switch hits wall or range gets to very low
+        //if (putItIn->Get())
+        //dump balls
+
+        //go backward until across the line
+
+        //turn tward wall
+
+        //go forward until limit switch hits wall or range gets to very low
+
+        //back up a little
+
+        //turn 90 degrees twards our side
+
+        //turn on intake things
+
+        //go forward under the trench
+
 
 
 }
@@ -270,7 +279,7 @@ if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
 
-//peerPressure1.Set(nuke->Get() || limitSwitch.Get());
+//peerPressure1.Set(nuke->Get() || stopIt.Get());
 
 
 }
