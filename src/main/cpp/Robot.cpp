@@ -38,26 +38,26 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *brit; 
 
 //brit motors
-/*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi5 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi6 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 13 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 7, rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi5 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi6 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
 
 //brit motor groups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );*/
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );
 
 //axel motors
-rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+/*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 
 //axel motor croups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );*/
 
 //camera creation
 cs::UsbCamera fbi;
@@ -74,6 +74,8 @@ double a;
 double b;
 //speed var
 double speed;
+//Compressor Var
+bool w = false;
 
 //sonlenoid creation
 frc::Solenoid peerPressure1 (0);
@@ -91,8 +93,8 @@ rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
-//rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
-//rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
+rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
+rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 
 //Dead Zone Variables
 double lonelyY;
@@ -106,9 +108,8 @@ void Robot::RobotInit()
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
-  //compressure control
-  bonusPressure.frc::Compressor::SetClosedLoopControl(true);
+  
+ 
 
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
@@ -229,32 +230,47 @@ if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
 if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
 if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
-//if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
-//if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
+if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
+if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
-//frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
-//frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
+frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 
 //read sensor
 frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
 
 // Code for deadzones on joystick
-if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
+if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough)
 {
-  lonelyY = -lonelyStick->GetY();
+  lonelyY = lonelyStick->GetY();
 }
 if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
 {
   lonelyTwist = lonelyStick->GetTwist();
 }
+
+//compressor
+/*if (bonusPressure.GetPressureSwitchValue() == true){
+  w = true;
+} else {
+  w = false;
+}*/
+
+bonusPressure.SetClosedLoopControl(true);
+/*if (!bonusPressure.GetPressureSwitchValue()){
+  bonusPressure.Stop();
+}*/
+
+
+
 //gearbox shifting code
-peerPressure1.Set(lessSpeed->Get());
-peerPressure2.Set(moreSpeed->Get());
+peerPressure2.Set(lessSpeed->Get());
+peerPressure1.Set(moreSpeed->Get());
 
 //pneumatic actuator
 roboMyRio.Set(putItIn->Get());
@@ -293,8 +309,8 @@ void Robot::TestPeriodic() {
 //back motors following front motors
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
-//driveboi5.Follow (driveboi1, /*invert*/ false);
-//driveboi6.Follow (driveboi3, /*invert*/ false);
+driveboi5.Follow (driveboi1, /*invert*/ false);
+driveboi6.Follow (driveboi3, /*invert*/ false);
 
 //encoder math
 a = spinReader1.GetPosition() - spinReader3.GetPosition();
