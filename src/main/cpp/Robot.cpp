@@ -38,12 +38,12 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *brit; 
 
 //brit motors
-rev::CANSparkMax driveboi1 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 13 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 7, rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi5 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi6 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 13, rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi5 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi6 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
 
 //brit motor groups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
