@@ -124,6 +124,7 @@ void Robot::RobotInit()
   lessSpeed = new frc::JoystickButton( lonelyStick, 5);
   moreSpeed = new frc::JoystickButton( lonelyStick, 3);
   putItIn = new frc::JoystickButton( lonelyStick, 1);
+
   //setting up drivetrain
 
   brit = new frc::DifferentialDrive( speedyboiL , speedyboiR );
