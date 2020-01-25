@@ -97,7 +97,7 @@ rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 //Dead Zone Variables
 double lonelyY;
 double lonelyTwist;
-double notFarEnough = .05 /*todo: Adjust to driver's needs*/;
+double notFarEnough;
 
 
 
@@ -126,10 +126,7 @@ void Robot::RobotInit()
   putItIn = new frc::JoystickButton( lonelyStick, 1);
 
   //setting up drivetrain
-
   brit = new frc::DifferentialDrive( speedyboiL , speedyboiR );
- 
- 
 }
 
 /**
@@ -166,12 +163,10 @@ void Robot::AutonomousInit()
   //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_autoSelected << std::endl;
 
-  /*if (m_autoSelected == kAutoNameCustom) 
-  {
+  /*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } 
-  else 
-  {
+  else {
     // Default Auto goes here
   }*/
 }
@@ -181,21 +176,17 @@ void Robot::AutonomousPeriodic()
   //driveboi2.Follow (driveboi1, /*invert*/ false);
   //driveboi4.Follow (driveboi3, /*invert*/ false);
 
-  /*if (m_autoSelected == kAutoNameCustom) 
-  {
+  /*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
-
   } 
-  else 
-  {
+  else {
     // Default Auto goes here
   }*/
-
 
       //auton idea
 
         //go forward until limit switch hits wall or range gets to very low
-        //if (putItIn->Get())
+        
         //dump balls
 
         //go backward until across the line
@@ -211,16 +202,11 @@ void Robot::AutonomousPeriodic()
         //turn on intake things
 
         //go forward under the trench
-
-
-
 }
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() 
-{
-
+void Robot::TeleopPeriodic() {
 
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
@@ -242,28 +228,16 @@ frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
 
 // Code for deadzones on joystick
-if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough)
-{
+notFarEnough = .05; /*todo: Adjust to driver's needs*/
+if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough){
   lonelyY = lonelyStick->GetY();
 }
-if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
-{
+if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough){
   lonelyTwist = -lonelyStick->GetTwist();
 }
 
-//compressor
-/*if (bonusPressure.GetPressureSwitchValue() == true){
-  w = true;
-} else {
-  w = false;
-}*/
-
+//making the compressor compress
 bonusPressure.SetClosedLoopControl(true);
-/*if (!bonusPressure.GetPressureSwitchValue()){
-  bonusPressure.Stop();
-}*/
-
-
 
 //gearbox shifting code
 peerPressure2.Set(lessSpeed->Get());
@@ -275,8 +249,9 @@ roboMyRio.Set(putItIn->Get());
 //drive train code
 if (fullCheech->Get()) {
   speed = 1;
- } else {
-  speed = .4;
+ }
+else {
+  speed = .6;
  }
 brit->ArcadeDrive(lonelyY *speed , lonelyTwist * speed);
 
@@ -312,8 +287,8 @@ driveboi6.Follow (driveboi3, /*invert*/ false);
 //encoder math
 forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
 turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-forwardBackwardDistance = 23; //23 = 5 ft
-turnDistance = 25; //30? = 360 degrees
+forwardBackwardDistance = 23; //23 is about 5 ft
+turnDistance = 25; //25 is about 360 degrees
 
 if (oneSpin->Get()) {
   driveboi1.Set(.1);
