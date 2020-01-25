@@ -21,7 +21,6 @@
 #include <frc/Compressor.h>
 #include <frc/AnalogInput.h>
 
-
 //joystick creation
 frc::Joystick *lonelyStick;
 frc::JoystickButton *nuke; //button 4
@@ -99,16 +98,11 @@ double lonelyY;
 double lonelyTwist;
 double notFarEnough;
 
-
-
-void Robot::RobotInit() 
-{
+void Robot::RobotInit() {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   
- 
-
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
     fbi.SetVideoMode ( cs::VideoMode::PixelFormat::kYUYV , 320 , 240 , 10 );
@@ -137,13 +131,7 @@ void Robot::RobotInit()
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() 
-{
-
-
-
-
-}
+void Robot::RobotPeriodic() {}
 
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -156,8 +144,7 @@ void Robot::RobotPeriodic()
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-void Robot::AutonomousInit() 
-{
+void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
@@ -171,8 +158,7 @@ void Robot::AutonomousInit()
   }*/
 }
 
-void Robot::AutonomousPeriodic() 
-{
+void Robot::AutonomousPeriodic() {
   //driveboi2.Follow (driveboi1, /*invert*/ false);
   //driveboi4.Follow (driveboi3, /*invert*/ false);
 
@@ -266,17 +252,9 @@ brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
-
-//peerPressure1.Set(nuke->Get() || stopIt.Get());
-
-
 }
 
 void Robot::TestPeriodic() {
-
-
-
-
 
 //back motors following front motors
 driveboi2.Follow (driveboi1, /*invert*/ false);
@@ -311,7 +289,6 @@ if (oneSpin->Get()) {
   spinReader4.SetPosition(0);
   }
 /*
-
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
 if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
@@ -323,15 +300,12 @@ else driveboi1.Set(0);
 if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
 else if (spinReader3.GetPosition() < -r) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
-else driveboi3.Set(0);
-
-*/
+else driveboi3.Set(0);*/
 
 /*motor group = .99^encoder value
 motor group = -.99^encoder value
 make sure the opposite encoder stuff is the opposite otherwise as it counts up it will keep getting faster/ need two different equations
-driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
-*/
+driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side*/
 }
 
 #ifndef RUNNING_FRC_TESTS
