@@ -46,8 +46,8 @@ rev::CANSparkMax driveboi5 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi6 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
 
 //brit motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi5 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 , driveboi6 );
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
+frc::SpeedControllerGroup speedyboiR ( driveboi4 , driveboi5 , driveboi6 );
 
 //axel motors
 /*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
@@ -74,8 +74,6 @@ double a;
 double b;
 //speed var
 double speed;
-//Compressor Var
-bool w = false;
 
 //sonlenoid creation
 frc::Solenoid peerPressure1 (0);
@@ -115,12 +113,10 @@ void Robot::RobotInit()
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
     fbi.SetVideoMode ( cs::VideoMode::PixelFormat::kYUYV , 320 , 240 , 10 );
 
-  //setting up joystick
-  lonelyStick = new frc::Joystick ( 1 );
-
   //setting up controller
   neighborlyInputDevice = new frc::XboxController ( 0 );
 
+  //setting up Joystick
   lonelyStick = new frc::Joystick(0);
   nuke = new frc::JoystickButton( lonelyStick, 4);
   oneSpin = new frc::JoystickButton( lonelyStick, 6);
@@ -251,7 +247,7 @@ if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough)
 }
 if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
 {
-  lonelyTwist = lonelyStick->GetTwist();
+  lonelyTwist = -lonelyStick->GetTwist();
 }
 
 //compressor
