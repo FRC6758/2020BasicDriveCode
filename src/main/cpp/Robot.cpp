@@ -66,12 +66,12 @@ cs::UsbCamera fbi;
 frc::AnalogInput germans (0);
 
 //revolution var
-int r;
-int s;
+int forwardBackwardDistance;
+int turnDistance;
 //encoder - encoder
-double a;
+double forwardBackward;
 //encoder + encoder
-double b;
+double turn;
 //speed var
 double speed;
 
@@ -310,10 +310,10 @@ driveboi5.Follow (driveboi1, /*invert*/ false);
 driveboi6.Follow (driveboi3, /*invert*/ false);
 
 //encoder math
-a = spinReader1.GetPosition() - spinReader3.GetPosition();
-b = spinReader1.GetPosition() + spinReader3.GetPosition();
-r = 23; //23 = 5 ft
-s = 25; //30? = 360 degrees
+forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+forwardBackwardDistance = 23; //23 = 5 ft
+turnDistance = 25; //30? = 360 degrees
 
 if (oneSpin->Get()) {
   driveboi1.Set(.1);
@@ -327,7 +327,7 @@ if (oneSpin->Get()) {
 } else if (lessSpeed->Get()) {
   driveboi1.Set(.1);
   driveboi3.Set(.1);
-} else if ( a < -2*r || a > 2*r || b < -2*s || b > 2*s ) {
+} else if ( forwardBackward < -2*forwardBackwardDistance || forwardBackward > 2*forwardBackwardDistance || turn < -2*turnDistance || turn > 2*turnDistance ) {
   driveboi1.Set(0);
   driveboi3.Set(0);
   spinReader1.SetPosition(0);
