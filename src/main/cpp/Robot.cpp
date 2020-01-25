@@ -50,10 +50,10 @@ frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
 frc::SpeedControllerGroup speedyboiR ( driveboi4 , driveboi5 , driveboi6 );
 
 //axel motors
-/*rev::CANSparkMax driveboi1 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+/*rev::CANSparkMax driveboi1 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 
 //axel motor croups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
