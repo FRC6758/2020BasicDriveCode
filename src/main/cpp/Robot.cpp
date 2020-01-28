@@ -22,7 +22,7 @@
 #include <frc/AnalogInput.h>
 
 
-#define BritMode
+#define Brit
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -40,7 +40,7 @@ frc::XboxController *neighborlyInputDevice;
 frc::DifferentialDrive *brit; 
 
 //brit motors
-#ifdef BritMode
+#ifdef Brit
 rev::CANSparkMax driveboi1 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi3 ( 13, rev::CANSparkMax::MotorType::kBrushless );
@@ -61,7 +61,7 @@ rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
 
-#ifndef BritMode
+#ifndef Brit
 //axel motors
 rev::CANSparkMax driveboi1 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
@@ -105,7 +105,6 @@ frc::DigitalInput stopIt (4);
 //revolution var
 int forwardBackwardDistance = 46; //23 is about 5 ft
 int turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
-//encoder + encoder
 
 //Dead Zone Variables
 double lonelyY;
@@ -180,14 +179,14 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic() 
 {
-#ifdef BritMode
+#ifdef Brit
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 driveboi5.Follow (driveboi1, /*invert*/ false);
 driveboi6.Follow (driveboi3, /*invert*/ false);
 #endif
 
-#ifndef BritMode
+#ifndef Brit
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 #endif
@@ -290,7 +289,7 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
 
-#ifdef BritMode
+#ifdef Brit
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
@@ -308,7 +307,7 @@ frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 #endif 
 
-#ifndef BritMode
+#ifndef Brit
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
