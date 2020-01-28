@@ -22,7 +22,7 @@
 #include <frc/AnalogInput.h>
 
 
-// #define BritMode
+#define BritMode
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -51,11 +51,8 @@ rev::CANSparkMax driveboi6 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
 //brit motor groups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
 frc::SpeedControllerGroup speedyboiR ( driveboi4 , driveboi5 , driveboi6 );
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 
-//brit Encoder creation 
+//Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
@@ -63,10 +60,6 @@ rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
->>>>>>> Stashed changes
-=======
-#endif
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 #ifndef BritMode
 //axel motors
@@ -76,26 +69,15 @@ rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
 rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
 
 //axel motor croups
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );*/
-=======
 frc::SpeedControllerGroup speedyboiR ( driveboi1 , driveboi2 );
 frc::SpeedControllerGroup speedyboiL ( driveboi3 , driveboi4 );
 
-//axel Encoder creation 
+//Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 #endif
->>>>>>> Stashed changes
-=======
-frc::SpeedControllerGroup speedyboiR ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiL ( driveboi3 , driveboi4 );
-#endif
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 //camera creation
 cs::UsbCamera fbi;
@@ -120,54 +102,21 @@ frc::Compressor bonusPressure (0);
 //limit switch creation
 frc::DigitalInput stopIt (4);
 
-<<<<<<< Updated upstream
-//Encoder creation 
-rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
-rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
-rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
-rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
-<<<<<<< HEAD
-rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
-rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
-=======
-//revolution var
-int forwardBackwardDistance = 46; //23 is about 5 ft
-int turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
->>>>>>> Stashed changes
-=======
-//rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
-//rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
-
 //revolution var
 int forwardBackwardDistance = 46; //23 is about 5 ft
 int turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
 //encoder + encoder
-
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 //Dead Zone Variables
 double lonelyY;
 double lonelyTwist;
 double notFarEnough;
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-void Robot::RobotInit() {
-=======
 void Robot::RobotInit() 
 {
->>>>>>> Stashed changes
-=======
-
-
-void Robot::RobotInit() 
-{
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-  
- 
 
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
@@ -197,25 +146,10 @@ void Robot::RobotInit()
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-void Robot::RobotPeriodic() {}
-=======
 void Robot::RobotPeriodic() 
 {
 
 }
->>>>>>> Stashed changes
-=======
-void Robot::RobotPeriodic() 
-{
-
-
-
-
-}
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
-
 /**
  * This autonomous (along with the chooser code above) shows how to select
  * between different autonomous modes using the dashboard. The sendable chooser
@@ -241,13 +175,9 @@ void Robot::AutonomousInit()
     // Default Auto goes here
   }*/
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-void Robot::AutonomousPeriodic() {
-  //driveboi2.Follow (driveboi1, /*invert*/ false);
-  //driveboi4.Follow (driveboi3, /*invert*/ false);
+  step = forward1;
+}
 
-=======
 void Robot::AutonomousPeriodic() 
 {
 #ifdef BritMode
@@ -261,22 +191,9 @@ driveboi6.Follow (driveboi3, /*invert*/ false);
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
 #endif
-double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
->>>>>>> Stashed changes
-=======
-  step = forward1;
-}
 
-void Robot::AutonomousPeriodic() 
-{
-driveboi2.Follow (driveboi1, /*invert*/ false);
-driveboi4.Follow (driveboi3, /*invert*/ false);
-//driveboi5.Follow (driveboi1, /*invert*/ false);
-//driveboi6.Follow (driveboi3, /*invert*/ false);
 double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
 double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
   /*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } 
@@ -284,11 +201,6 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
     // Default Auto goes here
   }*/
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
   switch (step)
   {
   case forward1:
@@ -359,18 +271,9 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
       ZeroMotors();
       step = dump;}
     break;}
-<<<<<<< HEAD
   default:
     break;
   }
->>>>>>> Stashed changes
-=======
-  
-  
-  default:
-    break;
-  }
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
       //auton idea
         //go forward until limit switch hits wall or range gets to very low
         //dump balls
@@ -386,6 +289,7 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
+
 #ifdef BritMode
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
@@ -402,7 +306,7 @@ frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
-#endif
+#endif 
 
 #ifndef BritMode
 //42 counts per rev. on neo
@@ -410,33 +314,13 @@ if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
 if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
 if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
-if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
-=======
->>>>>>> Stashed changes
-=======
-//if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
-//if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
-=======
-#endif
->>>>>>> Stashed changes
-=======
-//frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
-//frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
+#endif 
 
 //read sensor
 frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
@@ -480,38 +364,13 @@ brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 
 //peerPressure1.Set(nuke->Get() || stopIt.Get());
->>>>>>> Stashed changes
-=======
-
-//peerPressure1.Set(nuke->Get() || stopIt.Get());
-
-
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 }
 
 void Robot::TestPeriodic() {
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 /*
->>>>>>> Stashed changes
-//back motors following front motors
-driveboi2.Follow (driveboi1, /*invert*/ false);
-driveboi4.Follow (driveboi3, /*invert*/ false);
-driveboi5.Follow (driveboi1, /*invert*/ false);
-driveboi6.Follow (driveboi3, /*invert*/ false);
-=======
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
-
-/*
-
-
 //back motors following front motors
 //driveboi2.Follow (driveboi1,  false);
 //driveboi4.Follow (driveboi3,  false);
@@ -521,19 +380,8 @@ driveboi6.Follow (driveboi3, /*invert*/ false);
 //encoder math 
 forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
 turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-forwardBackwardDistance = 23; //23 is about 5 ft
-turnDistance = 25; //25 is about 360 degrees
-=======
 forwardBackwardDistance = 46; //23 is about 5 ft
 turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
->>>>>>> Stashed changes
-=======
-forwardBackwardDistance = 46; //23 is about 5 ft
-turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
-
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 if (oneSpin->Get()) {
   driveboi1.Set(.1);
@@ -555,16 +403,8 @@ if (oneSpin->Get()) {
   spinReader3.SetPosition(0);
   spinReader4.SetPosition(0);
   }
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-/*
-=======
-
->>>>>>> Stashed changes
-=======
 
 
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 //Motor spins once with Joystick button
 //if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
 if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
@@ -576,31 +416,12 @@ else driveboi1.Set(0);
 if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
 else if (spinReader3.GetPosition() < -r) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-else driveboi3.Set(0);*/
-=======
 else driveboi3.Set(0);
->>>>>>> Stashed changes
-=======
-else driveboi3.Set(0);
-
-
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 
 /*motor group = .99^encoder value
 motor group = -.99^encoder value
 make sure the opposite encoder stuff is the opposite otherwise as it counts up it will keep getting faster/ need two different equations
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side*/
-=======
 driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
-=======
-driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
-
-
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 */
 }
 
@@ -611,11 +432,6 @@ void Robot::ZeroMotors() {
   spinReader2.SetPosition(0);
   spinReader3.SetPosition(0);
   spinReader4.SetPosition(0);
-
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> 4f94c74ef25eee4bcff8ae414d703115f29e29f6
 }
 
 #ifndef RUNNING_FRC_TESTS
