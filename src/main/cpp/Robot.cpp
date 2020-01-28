@@ -51,32 +51,28 @@ rev::CANSparkMax driveboi6 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
 //brit motor groups
 frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
 frc::SpeedControllerGroup speedyboiR ( driveboi4 , driveboi5 , driveboi6 );
-
-//Encoder creation 
-rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
-rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
-rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
-rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
-rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
-rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
 
 #ifndef Brit
 //axel motors
-rev::CANSparkMax driveboi1 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi2 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi3 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi4 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
 
 //axel motor croups
-frc::SpeedControllerGroup speedyboiR ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiL ( driveboi3 , driveboi4 );
+frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
+frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
+#endif 
 
 //Encoder creation 
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
+#ifdef Brit
+rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
+rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
 
 //camera creation
@@ -179,16 +175,11 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic() 
 {
-#ifdef Brit
 driveboi2.Follow (driveboi1, /*invert*/ false);
 driveboi4.Follow (driveboi3, /*invert*/ false);
+#ifdef Brit
 driveboi5.Follow (driveboi1, /*invert*/ false);
 driveboi6.Follow (driveboi3, /*invert*/ false);
-#endif
-
-#ifndef Brit
-driveboi2.Follow (driveboi1, /*invert*/ false);
-driveboi4.Follow (driveboi3, /*invert*/ false);
 #endif
 
 double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
@@ -273,52 +264,40 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   default:
     break;
   }
-      //auton idea
-        //go forward until limit switch hits wall or range gets to very low
-        //dump balls
-        //go backward until across the line
-        //turn tward wall
-        //go forward until limit switch hits wall or range gets to very low
-        //back up a little
-        //turn 90 degrees twards our side
-        //turn on intake things
-        //go forward under the trench
+      /*auton idea
+        go forward until limit switch hits wall or range gets to very low
+        dump balls
+        go backward until across the line
+        turn tward wall
+        go forward until limit switch hits wall or range gets to very low
+        back up a little
+        turn 90 degrees twards our side
+        turn on intake things
+        go forward under the trench*/
 }
 
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
 
-#ifdef Brit
 //42 counts per rev. on neo
 if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
 if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
 if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
 if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
+#ifdef Brit
 if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
 if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
+#endif
 
 //Read Encoder
 frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
+#ifdef Brit
 frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
 frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
-#endif 
-
-#ifndef Brit
-//42 counts per rev. on neo
-if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
-if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
-if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
-if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
-
-//Read Encoder
-frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 #endif 
 
 //read sensor
@@ -330,7 +309,13 @@ if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough){
   lonelyY = lonelyStick->GetY();
 }
 if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough){
+  #ifdef Brit
+  lonelyTwist = -lonelyStick->GetTwist();
+  #endif
+
+  #ifndef Brit
   lonelyTwist = lonelyStick->GetTwist();
+  #endif
 }
 
 //making the compressor compress
@@ -375,7 +360,7 @@ void Robot::TestPeriodic() {
 //driveboi4.Follow (driveboi3,  false);
 //driveboi5.Follow (driveboi1,  false);
 //driveboi6.Follow (driveboi3,  false);
-/*
+
 //encoder math 
 forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
 turn = spinReader1.GetPosition() + spinReader3.GetPosition();
@@ -417,7 +402,7 @@ else if (spinReader3.GetPosition() < -r) driveboi3.Set(.1);
 //else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
 else driveboi3.Set(0);
 
-/*motor group = .99^encoder value
+motor group = .99^encoder value
 motor group = -.99^encoder value
 make sure the opposite encoder stuff is the opposite otherwise as it counts up it will keep getting faster/ need two different equations
 driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
@@ -431,6 +416,10 @@ void Robot::ZeroMotors() {
   spinReader2.SetPosition(0);
   spinReader3.SetPosition(0);
   spinReader4.SetPosition(0);
+  #ifdef Brit 
+  spinReader5.SetPosition(0);
+  spinReader6.SetPosition(0);
+  #endif
 }
 
 #ifndef RUNNING_FRC_TESTS
