@@ -21,6 +21,7 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+  void ZeroMotors();
 
  private:
   frc::SendableChooser<std::string> m_chooser;
