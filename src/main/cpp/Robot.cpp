@@ -21,51 +21,50 @@
 #include <frc/Compressor.h>
 #include <frc/AnalogInput.h>
 
-
 #define Brit
 
 //joystick creation
 frc::Joystick *lonelyStick;
-frc::JoystickButton *nuke; //button 4
-frc::JoystickButton *oneSpin; //button 6
-frc::JoystickButton *lessSpeed; //button 5
-frc::JoystickButton *moreSpeed; //button 3
+frc::JoystickButton *nuke;       //button 4
+frc::JoystickButton *oneSpin;    //button 6
+frc::JoystickButton *lessSpeed;  //button 5
+frc::JoystickButton *moreSpeed;  //button 3
 frc::JoystickButton *fullCheech; //button 2
-frc::JoystickButton *putItIn; //button 1
+frc::JoystickButton *putItIn;    //button 1
 
 //controller creation
-frc::XboxController *neighborlyInputDevice;
+frc::XboxController *soundController;
 
 //tank drive creation
-frc::DifferentialDrive *brit; 
+frc::DifferentialDrive *brit;
 
 //brit motors
 #ifdef Brit
-rev::CANSparkMax driveboi1 ( 7 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 10 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 13, rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 2 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi5 ( 8 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi6 ( 9 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1(7, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi2(10, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi3(13, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi4(2, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi5(8, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi6(9, rev::CANSparkMax::MotorType::kBrushless);
 
 //brit motor groups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 , driveboi3 );
-frc::SpeedControllerGroup speedyboiR ( driveboi4 , driveboi5 , driveboi6 );
+frc::SpeedControllerGroup speedyboiL(driveboi1, driveboi2, driveboi3);
+frc::SpeedControllerGroup speedyboiR(driveboi4, driveboi5, driveboi6);
 #endif
 
 #ifndef Brit
 //axel motors
-rev::CANSparkMax driveboi1 ( 4 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi2 ( 6 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi3 ( 1 , rev::CANSparkMax::MotorType::kBrushless );
-rev::CANSparkMax driveboi4 ( 3 , rev::CANSparkMax::MotorType::kBrushless );
+rev::CANSparkMax driveboi1(4, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi2(6, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi3(1, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax driveboi4(3, rev::CANSparkMax::MotorType::kBrushless);
 
 //axel motor croups
-frc::SpeedControllerGroup speedyboiL ( driveboi1 , driveboi2 );
-frc::SpeedControllerGroup speedyboiR ( driveboi3 , driveboi4 );
-#endif 
+frc::SpeedControllerGroup speedyboiL(driveboi1, driveboi2);
+frc::SpeedControllerGroup speedyboiR(driveboi3, driveboi4);
+#endif
 
-//Encoder creation 
+//Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
@@ -79,35 +78,45 @@ rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 cs::UsbCamera fbi;
 
 //ultrasonic range sensor creation
-frc::AnalogInput germans (0);
+frc::AnalogInput germans(0);
 
 //speed var
 double speed;
 //auton steps variable thing
-enum Auton {forward1 = 1 , dump = 2 , back1 = 3 , turn1 = 4 , forward2 = 5 , back2 = 6 , turn2 = 7 , forward3 = 8};
+enum Auton
+{
+  forward1 = 1,
+  dump = 2,
+  back1 = 3,
+  turn1 = 4,
+  forward2 = 5,
+  back2 = 6,
+  turn2 = 7,
+  forward3 = 8
+};
 Auton step;
 
 //sonlenoid creation
-frc::Solenoid peerPressure1 (0);
-frc::Solenoid peerPressure2 (1);
-frc::Solenoid roboMyRio (2);
+frc::Solenoid peerPressure1(0);
+frc::Solenoid peerPressure2(1);
+frc::Solenoid roboMyRio(2);
 
 //compressor creation
-frc::Compressor bonusPressure (0);
+frc::Compressor bonusPressure(0);
 
 //limit switch creation
-frc::DigitalInput stopIt (4);
+frc::DigitalInput stopIt(4);
 
 //revolution var
 int forwardBackwardDistance = 46; //23 is about 5 ft
-int turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
+int turnDistance = 29;            //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
 
 //Dead Zone Variables
 double lonelyY;
 double lonelyTwist;
 double notFarEnough;
 
-void Robot::RobotInit() 
+void Robot::RobotInit()
 {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -115,22 +124,22 @@ void Robot::RobotInit()
 
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
-    fbi.SetVideoMode ( cs::VideoMode::PixelFormat::kYUYV , 320 , 240 , 10 );
+  fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
-  neighborlyInputDevice = new frc::XboxController ( 0 );
+  neighborlyInputDevice = new frc::XboxController(0);
 
   //setting up Joystick
   lonelyStick = new frc::Joystick(0);
-  nuke = new frc::JoystickButton( lonelyStick, 4);
-  oneSpin = new frc::JoystickButton( lonelyStick, 6);
-  fullCheech = new frc::JoystickButton( lonelyStick, 2);
-  lessSpeed = new frc::JoystickButton( lonelyStick, 5);
-  moreSpeed = new frc::JoystickButton( lonelyStick, 3);
-  putItIn = new frc::JoystickButton( lonelyStick, 1);
+  nuke = new frc::JoystickButton(lonelyStick, 4);
+  oneSpin = new frc::JoystickButton(lonelyStick, 6);
+  fullCheech = new frc::JoystickButton(lonelyStick, 2);
+  lessSpeed = new frc::JoystickButton(lonelyStick, 5);
+  moreSpeed = new frc::JoystickButton(lonelyStick, 3);
+  putItIn = new frc::JoystickButton(lonelyStick, 1);
 
   //setting up drivetrain
-  brit = new frc::DifferentialDrive( speedyboiL , speedyboiR );
+  brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
 }
 
 /**
@@ -141,9 +150,8 @@ void Robot::RobotInit()
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() 
+void Robot::RobotPeriodic()
 {
-
 }
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -156,7 +164,7 @@ void Robot::RobotPeriodic()
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-void Robot::AutonomousInit() 
+void Robot::AutonomousInit()
 {
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
@@ -173,17 +181,17 @@ void Robot::AutonomousInit()
   step = forward1;
 }
 
-void Robot::AutonomousPeriodic() 
+void Robot::AutonomousPeriodic()
 {
-driveboi2.Follow (driveboi1, /*invert*/ false);
-driveboi4.Follow (driveboi3, /*invert*/ false);
+  driveboi2.Follow(driveboi1, /*invert*/ false);
+  driveboi4.Follow(driveboi3, /*invert*/ false);
 #ifdef Brit
-driveboi5.Follow (driveboi1, /*invert*/ false);
-driveboi6.Follow (driveboi3, /*invert*/ false);
+  driveboi5.Follow(driveboi1, /*invert*/ false);
+  driveboi6.Follow(driveboi3, /*invert*/ false);
 #endif
 
-double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   /*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } 
@@ -194,77 +202,112 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   switch (step)
   {
   case forward1:
-    { if (forwardBackward < 92) {
-        driveboi1.Set(.1);
-        driveboi3.Set(-.1);
-    }
-    else {
-        ZeroMotors();
-      step = dump;}
-    break;}
-  case dump:
+  {
+    if (forwardBackward < 92)
     {
-      step = back1;
-    break;
+      driveboi1.Set(.1);
+      driveboi3.Set(-.1);
     }
-  case back1:
-    { if ( forwardBackward > -92 ){
-        driveboi1.Set(-.1);
-        driveboi3.Set(.1);
-    }
-    else {
-        ZeroMotors();
-      step = turn1;}
-    break;}
-  case turn1:
-    { if (turn < 14.5) {
-        driveboi1.Set(.1);
-        driveboi3.Set(.1);
-    }
-    else{
-        ZeroMotors();
-      step = forward2;}
-    break;}
-  case forward2:
-    { if (forwardBackward < 72.578) {
-        driveboi1.Set(.1);
-        driveboi3.Set(-.1);
-    }
-    else{
-       ZeroMotors();
-      step = back2;}
-    break;}
-  case back2:
-    { if (forwardBackward > -4.6) {
-        driveboi1.Set(-.1);
-        driveboi3.Set(.1);
-    }
-    else{
-       ZeroMotors();
-      step = turn2;}
-    break;}
-  case turn2:
-    { if (turn < 14.5) {
-        driveboi1.Set(.1);
-        driveboi3.Set(.1);
-    }
-    else{
-        ZeroMotors();
-      step = forward3;}
-    break;}
-  case forward3:
-    { if ( forwardBackward < 198.49) {
-        driveboi1.Set(.1);
-        driveboi3.Set(-.1);
-    }
-    else {
+    else
+    {
       ZeroMotors();
-      step = dump;}
-    break;}
+      step = dump;
+    }
+    break;
+  }
+  case dump:
+  {
+    step = back1;
+    break;
+  }
+  case back1:
+  {
+    if (forwardBackward > -92)
+    {
+      driveboi1.Set(-.1);
+      driveboi3.Set(.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn1;
+    }
+    break;
+  }
+  case turn1:
+  {
+    if (turn < 14.5)
+    {
+      driveboi1.Set(.1);
+      driveboi3.Set(.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
+  }
+  case forward2:
+  {
+    if (forwardBackward < 72.578)
+    {
+      driveboi1.Set(.1);
+      driveboi3.Set(-.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
+  }
+  case back2:
+  {
+    if (forwardBackward > -4.6)
+    {
+      driveboi1.Set(-.1);
+      driveboi3.Set(.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn2;
+    }
+    break;
+  }
+  case turn2:
+  {
+    if (turn < 14.5)
+    {
+      driveboi1.Set(.1);
+      driveboi3.Set(.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward3;
+    }
+    break;
+  }
+  case forward3:
+  {
+    if (forwardBackward < 198.49)
+    {
+      driveboi1.Set(.1);
+      driveboi3.Set(-.1);
+    }
+    else
+    {
+      ZeroMotors();
+      step = dump;
+    }
+    break;
+  }
   default:
     break;
   }
-      /*auton idea
+  /*auton idea
         go forward until limit switch hits wall or range gets to very low
         dump balls
         go backward until across the line
@@ -278,83 +321,95 @@ double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {
+void Robot::TeleopPeriodic()
+{
 
-//42 counts per rev. on neo
-if(spinReader1.GetVelocity() == 0) spinReader1.SetPosition(0);
-if(spinReader2.GetVelocity() == 0) spinReader2.SetPosition(0);
-if(spinReader3.GetVelocity() == 0) spinReader3.SetPosition(0);
-if(spinReader4.GetVelocity() == 0) spinReader4.SetPosition(0);
+  //42 counts per rev. on neo
+  if (spinReader1.GetVelocity() == 0)
+    spinReader1.SetPosition(0);
+  if (spinReader2.GetVelocity() == 0)
+    spinReader2.SetPosition(0);
+  if (spinReader3.GetVelocity() == 0)
+    spinReader3.SetPosition(0);
+  if (spinReader4.GetVelocity() == 0)
+    spinReader4.SetPosition(0);
 #ifdef Brit
-if(spinReader5.GetVelocity() == 0) spinReader5.SetPosition(0);
-if(spinReader6.GetVelocity() == 0) spinReader6.SetPosition(0);
+  if (spinReader5.GetVelocity() == 0)
+    spinReader5.SetPosition(0);
+  if (spinReader6.GetVelocity() == 0)
+    spinReader6.SetPosition(0);
 #endif
 
-//Read Encoder
-frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
+  //Read Encoder
+  frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
 #ifdef Brit
-frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
-frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
-#endif 
+  frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
+#endif
 
-//read sensor
-frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
+  //read sensor
+  frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
 
-// Code for deadzones on joystick
-notFarEnough = .05; /*todo: Adjust to driver's needs*/
-if (-lonelyStick->GetY() < notFarEnough ||-lonelyStick->GetY() > -notFarEnough){
-  lonelyY = lonelyStick->GetY();
-}
-if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough){
-  #ifdef Brit
-  lonelyTwist = -lonelyStick->GetTwist();
-  #endif
+  // Code for deadzones on joystick
+  notFarEnough = .05; /*todo: Adjust to driver's needs*/
+  if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
+  {
+    lonelyY = lonelyStick->GetY();
+  }
+  if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
+  {
+#ifdef Brit
+    lonelyTwist = -lonelyStick->GetTwist();
+#endif
 
-  #ifndef Brit
-  lonelyTwist = lonelyStick->GetTwist();
-  #endif
-}
+#ifndef Brit
+    lonelyTwist = lonelyStick->GetTwist();
+#endif
+  }
 
-//making the compressor compress
-bonusPressure.SetClosedLoopControl(true);
+  //making the compressor compress
+  bonusPressure.SetClosedLoopControl(true);
 
-//gearbox shifting code
-peerPressure2.Set(lessSpeed->Get());
-peerPressure1.Set(moreSpeed->Get());
+  //gearbox shifting code
+  peerPressure2.Set(lessSpeed->Get());
+  peerPressure1.Set(moreSpeed->Get());
 
-//pneumatic actuator
-roboMyRio.Set(putItIn->Get());
+  //pneumatic actuator
+  roboMyRio.Set(putItIn->Get());
 
-//drive train code
-if (fullCheech->Get()) {
-  speed = 1;
- }
-else {
-  speed = .4;
- }
-brit->ArcadeDrive(lonelyY *speed , lonelyTwist * speed);
+  //drive train code
+  if (fullCheech->Get())
+  {
+    speed = 1;
+  }
+  else
+  {
+    speed = .4;
+  }
+  brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
 
-/*//joystick values to movement in drivetrain
+  /*//joystick values to movement in drivetrain
 brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 
-//controller values to movement in drivetrain
-//brit->ArcadeDrive ( neighborlyInputDevice->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , neighborlyInputDevice->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
+  //controller values to movement in drivetrain
+  //brit->ArcadeDrive ( soundController->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , soundController->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
 
-//testing to use controller
-/*double testingboi = neighborlyInputDevice->GetX(frc::GenericHID::JoystickHand::kLeftHand);
+  //testing to use controller
+  /*double testingboi = soundController->GetX(frc::GenericHID::JoystickHand::kLeftHand);
 if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
 
-//peerPressure1.Set(nuke->Get() || stopIt.Get());
+  //peerPressure1.Set(nuke->Get() || stopIt.Get());
 }
 
-void Robot::TestPeriodic() {
+void Robot::TestPeriodic()
+{
 
-/*
+  /*
 //back motors following front motors
 //driveboi2.Follow (driveboi1,  false);
 //driveboi4.Follow (driveboi3,  false);
@@ -409,19 +464,23 @@ driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
 */
 }
 
-void Robot::ZeroMotors() {
+void Robot::ZeroMotors()
+{
   driveboi1.Set(0);
   driveboi3.Set(0);
   spinReader1.SetPosition(0);
   spinReader2.SetPosition(0);
   spinReader3.SetPosition(0);
   spinReader4.SetPosition(0);
-  #ifdef Brit 
+#ifdef Brit
   spinReader5.SetPosition(0);
   spinReader6.SetPosition(0);
-  #endif
+#endif
 }
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main()
+{
+  return frc::StartRobot<Robot>();
+}
 #endif
