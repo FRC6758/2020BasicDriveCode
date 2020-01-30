@@ -20,8 +20,11 @@
 #include <cmath>
 #include <frc/Compressor.h>
 #include <frc/AnalogInput.h>
+#include <frc/DigitalOutput.h>
 
 #define Brit
+
+//#define Sounds
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -31,6 +34,16 @@ frc::JoystickButton *lessSpeed;  //button 5
 frc::JoystickButton *moreSpeed;  //button 3
 frc::JoystickButton *fullCheech; //button 2
 frc::JoystickButton *putItIn;    //button 1
+#ifdef Sounds
+frc::JoystickButton *sound1; //button 7
+frc::JoystickButton *sound2; //button 8
+frc::JoystickButton *sound3; //button 9
+frc::JoystickButton *sound4; //button 11
+frc::JoystickButton *sound5; //button 12
+#endif
+
+//digital input creation
+frc::DigitalOutput playSound1(1);
 
 //controller creation
 frc::XboxController *soundController;
@@ -78,7 +91,7 @@ rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 cs::UsbCamera fbi;
 
 //ultrasonic range sensor creation
-frc::AnalogInput germans(0);
+frc::AnalogInput batman(0);
 
 //speed var
 double speed;
@@ -127,7 +140,7 @@ void Robot::RobotInit()
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
-  neighborlyInputDevice = new frc::XboxController(0);
+  //neighborlyInputDevice = new frc::XboxController(0);
 
   //setting up Joystick
   lonelyStick = new frc::Joystick(0);
@@ -137,6 +150,13 @@ void Robot::RobotInit()
   lessSpeed = new frc::JoystickButton(lonelyStick, 5);
   moreSpeed = new frc::JoystickButton(lonelyStick, 3);
   putItIn = new frc::JoystickButton(lonelyStick, 1);
+#ifdef Sounds
+  sound1 = new frc::JoystickButton(lonelyStick, 7);
+  sound2 = new frc::JoystickButton(lonelyStick, 8);
+  sound3 = new frc::JoystickButton(lonelyStick, 9);
+  sound4 = new frc::JoystickButton(lonelyStick, 11);
+  sound5 = new frc::JoystickButton(lonelyStick, 12);
+#endif
 
   //setting up drivetrain
   brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
@@ -351,7 +371,7 @@ void Robot::TeleopPeriodic()
 #endif
 
   //read sensor
-  frc::SmartDashboard::PutNumber("Range Sensor 1", germans.GetVoltage());
+  frc::SmartDashboard::PutNumber("Range Sensor 1", batman.GetVoltage());
 
   // Code for deadzones on joystick
   notFarEnough = .05; /*todo: Adjust to driver's needs*/
@@ -402,8 +422,34 @@ brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
 if ( testingboi > 0 ) {
   std::cout << "x axis is goin \n";
 }*/
-
-  //peerPressure1.Set(nuke->Get() || stopIt.Get());
+#ifdef Sounds
+  /*if (lonelyStick.GetThrottle() == 1)
+  {
+    if (sound1 && sound2 && sound3)
+    {
+    }
+    if (sound1 && sound2 && sound4)
+    {
+    }
+    if (sound1 && sound2 && sound5)
+    {
+    }
+    if (sound1 && sound2 && sound6)
+    {
+    }
+  }
+  if (lonelyStick.GetThrottle() == 0)
+  {
+  }*/
+  if (sound3->Get())
+  {
+    playSound1.Set(true);
+  }
+  else
+  {
+    playSound1.Set(false);
+  }
+#endif
 }
 
 void Robot::TestPeriodic()
