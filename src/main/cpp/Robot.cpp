@@ -223,7 +223,7 @@ void Robot::AutonomousPeriodic()
   {
   case forward1:
   {
-    if (forwardBackward < 92)
+    if (!stopIt.Get())
     {
       driveboi1.Set(.1);
       driveboi3.Set(-.1);
