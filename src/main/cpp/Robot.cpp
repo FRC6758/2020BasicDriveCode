@@ -24,7 +24,7 @@
 #include <frc/PWMVictorSPX.h>
 
 
-#define Brit
+//#define Brit
 
 //#define Sounds
 
@@ -375,6 +375,7 @@ void Robot::TeleopPeriodic()
 #endif
 
   //read sensor
+  double distance = batman.GetValue() * .125; //multiplying by .125 converts the sonar value to inches
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
