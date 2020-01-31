@@ -23,7 +23,6 @@
 #include <frc/DigitalOutput.h>
 #include <frc/PWMVictorSPX.h>
 
-
 //#define Brit
 
 //#define Sounds
@@ -95,7 +94,7 @@ cs::UsbCamera fbi;
 //ultrasonic range sensor creation
 frc::AnalogInput batman(0);
 //ultrsonic variable
-double distance = batman.GetValue() * .125; //multiplying by .125 converts the sonar value to inches
+double distance;
 
 //speed var
 double speed;
@@ -375,7 +374,7 @@ void Robot::TeleopPeriodic()
 #endif
 
   //read sensor
-  double distance = batman.GetValue() * .125; //multiplying by .125 converts the sonar value to inches
+  double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
