@@ -206,16 +206,16 @@ void Robot::AutonomousInit()
   }*/
 
   step = forward1;
-}
-
-void Robot::AutonomousPeriodic()
-{
   driveboi2.Follow(driveboi1, /*invert*/ false);
   driveboi4.Follow(driveboi3, /*invert*/ false);
 #ifdef Brit
   driveboi5.Follow(driveboi1, /*invert*/ false);
   driveboi6.Follow(driveboi3, /*invert*/ false);
 #endif
+}
+
+void Robot::AutonomousPeriodic()
+{
 
   double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
   double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
@@ -243,12 +243,14 @@ void Robot::AutonomousPeriodic()
   }
   case dump:
   {
-    step = back1;
+    roboMyRio.Set(true);
+    roboMyRio.Set(false);
+
     break;
   }
   case back1:
   {
-    if (!stopIt.Get())
+    if (forwardBackward > -92)
     {
       Robot::Backwards();
     }
@@ -274,7 +276,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (forwardBackward < 72.578)
+    if (!stopIt.Get())
     {
       Robot::Forwards();
     }
