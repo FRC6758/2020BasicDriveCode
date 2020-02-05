@@ -78,6 +78,9 @@ frc::SpeedControllerGroup speedyboiL(driveboi1, driveboi2);
 frc::SpeedControllerGroup speedyboiR(driveboi3, driveboi4);
 #endif
 
+//winch motor creation
+rev::CANSparkMax whinch(3, rev::CANSparkMax::MotorType::kBrushless);
+
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
@@ -87,6 +90,7 @@ rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
+rev::CANEncoder pimp = whinch.GetEncoder();
 
 //camera creation
 cs::UsbCamera fbi;
@@ -228,8 +232,7 @@ void Robot::AutonomousPeriodic()
   {
     if (!stopIt.Get())
     {
-      driveboi1.Set(.1);
-      driveboi3.Set(-.1);
+      Robot::Forwards();
     }
     else
     {
@@ -245,10 +248,9 @@ void Robot::AutonomousPeriodic()
   }
   case back1:
   {
-    if (forwardBackward > -92)
+    if (!stopIt.Get())
     {
-      driveboi1.Set(-.1);
-      driveboi3.Set(.1);
+      Robot::Backwards();
     }
     else
     {
@@ -261,8 +263,7 @@ void Robot::AutonomousPeriodic()
   {
     if (turn < 14.5)
     {
-      driveboi1.Set(.1);
-      driveboi3.Set(.1);
+      Robot::Clock();
     }
     else
     {
@@ -275,8 +276,7 @@ void Robot::AutonomousPeriodic()
   {
     if (forwardBackward < 72.578)
     {
-      driveboi1.Set(.1);
-      driveboi3.Set(-.1);
+      Robot::Forwards();
     }
     else
     {
@@ -289,8 +289,7 @@ void Robot::AutonomousPeriodic()
   {
     if (forwardBackward > -4.6)
     {
-      driveboi1.Set(-.1);
-      driveboi3.Set(.1);
+      Robot::Backwards();
     }
     else
     {
@@ -303,8 +302,7 @@ void Robot::AutonomousPeriodic()
   {
     if (turn < 14.5)
     {
-      driveboi1.Set(.1);
-      driveboi3.Set(.1);
+      Robot::Clock();
     }
     else
     {
@@ -317,8 +315,7 @@ void Robot::AutonomousPeriodic()
   {
     if (forwardBackward < 198.49)
     {
-      driveboi1.Set(.1);
-      driveboi3.Set(-.1);
+      Robot::Forwards();
     }
     else
     {
@@ -526,6 +523,27 @@ void Robot::ZeroMotors()
   spinReader5.SetPosition(0);
   spinReader6.SetPosition(0);
 #endif
+}
+
+void Robot::Forwards()
+{
+  driveboi1.Set(.1);
+  driveboi3.Set(-.1);
+}
+void Robot::Backwards()
+{
+  driveboi1.Set(-.1);
+  driveboi3.Set(.1);
+}
+void Robot::Clock()
+{
+  driveboi1.Set(.1);
+  driveboi3.Set(.1);
+}
+void Robot::CounterClock()
+{
+  driveboi1.Set(-.1);
+  driveboi3.Set(-.1);
 }
 
 #ifndef RUNNING_FRC_TESTS
