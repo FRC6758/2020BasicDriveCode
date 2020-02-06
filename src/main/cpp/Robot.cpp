@@ -23,7 +23,7 @@
 #include <frc/DigitalOutput.h>
 #include <frc/PWMVictorSPX.h>
 
-//#define Brit
+#define Brit
 
 //#define Sounds
 
@@ -74,8 +74,8 @@ rev::CANSparkMax driveboi3(1, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi4(3, rev::CANSparkMax::MotorType::kBrushless);
 
 //axel motor croups
-frc::SpeedControllerGroup speedyboiL(driveboi1, driveboi2);
-frc::SpeedControllerGroup speedyboiR(driveboi3, driveboi4);
+frc::SpeedControllerGroup speedyboiR(driveboi1, driveboi2);
+frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 #endif
 
 //winch motor creation
@@ -96,7 +96,7 @@ rev::CANEncoder pimp = whinch.GetEncoder();
 cs::UsbCamera fbi;
 
 //ultrasonic range sensor creation
-frc::AnalogInput batman(0);
+frc::AnalogInput batman(0); // 230 - 630 is usable range
 //ultrsonic variable
 double distance;
 
@@ -125,7 +125,7 @@ frc::Solenoid roboMyRio(2);
 frc::Compressor bonusPressure(0);
 
 //limit switch creation
-frc::DigitalInput stopIt(4);
+frc::DigitalInput stopIt(9);
 
 //revolution var
 int forwardBackwardDistance = 46; //23 is about 5 ft
@@ -230,7 +230,7 @@ void Robot::AutonomousPeriodic()
   {
   case forward1:
   {
-    if (!stopIt.Get())
+    if (batman.GetValue() > 375) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -245,12 +245,12 @@ void Robot::AutonomousPeriodic()
   {
     roboMyRio.Set(true);
     roboMyRio.Set(false);
-
+    step = back1;
     break;
   }
   case back1:
   {
-    if (forwardBackward > -92)
+    if (forwardBackward < 92)
     {
       Robot::Backwards();
     }
@@ -276,7 +276,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (!stopIt.Get())
+    if (batman.GetValue() > 250)
     {
       Robot::Forwards();
     }
@@ -289,7 +289,7 @@ void Robot::AutonomousPeriodic()
   }
   case back2:
   {
-    if (forwardBackward > -4.6)
+    if (forwardBackward < 4.6)
     {
       Robot::Backwards();
     }
@@ -373,14 +373,20 @@ void Robot::TeleopPeriodic()
 #endif
 
   //read sensor
-  double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
+  double distance = batman.GetValue(); // * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
   notFarEnough = .05; /*todo: Adjust to driver's needs*/
   if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
   {
+#ifdef Brit
     lonelyY = lonelyStick->GetY();
+#endif
+
+#ifndef Brit
+    lonelyY = -lonelyStick->GetY();
+#endif
   }
   if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
   {
@@ -529,13 +535,13 @@ void Robot::ZeroMotors()
 
 void Robot::Forwards()
 {
-  driveboi1.Set(.1);
-  driveboi3.Set(-.1);
+  driveboi1.Set(-.1);
+  driveboi3.Set(.1);
 }
 void Robot::Backwards()
 {
-  driveboi1.Set(-.1);
-  driveboi3.Set(.1);
+  driveboi1.Set(.1);
+  driveboi3.Set(-.1);
 }
 void Robot::Clock()
 {
