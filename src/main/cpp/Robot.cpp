@@ -99,6 +99,8 @@ cs::UsbCamera fbi;
 frc::AnalogInput batman(0); // 230 - 630 is usable range
 //ultrsonic variable
 double distance;
+//color/proximity sensor
+rev::ColorSensorV3::ColorSensorV3 helenKeller;
 
 //speed var
 double speed;
@@ -145,6 +147,9 @@ void Robot::RobotInit()
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
+
+  //setting up color/proximity sensor
+  helenKeller = rev::ColorSensorV3::ColorSensorV3(0);
 
   //setting up controller
   //neighborlyInputDevice = new frc::XboxController(0);
