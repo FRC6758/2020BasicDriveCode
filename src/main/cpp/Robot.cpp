@@ -108,7 +108,8 @@ enum Auton
   forward2 = 5,
   back2 = 6,
   turn2 = 7,
-  forward3 = 8
+  forward3 = 8,
+  null = 9
 };
 Auton step;
 
@@ -314,7 +315,7 @@ void Robot::AutonomousPeriodic()
     else
     {
       ZeroMotors();
-      step = dump;
+      step = null;
     }
     break;
   }
