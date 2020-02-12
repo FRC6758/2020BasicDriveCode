@@ -22,10 +22,9 @@
 #include <frc/AnalogInput.h>
 #include <frc/DigitalOutput.h>
 #include <frc/PWMVictorSPX.h>
+#include "ctre/Phoenix.h"
 
 #define Brit
-
-//#define Sounds
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -35,22 +34,12 @@ frc::JoystickButton *lessSpeed;  //button 5
 frc::JoystickButton *moreSpeed;  //button 3
 frc::JoystickButton *fullCheech; //button 2
 frc::JoystickButton *putItIn;    //button 1
-#ifdef Sounds
-frc::JoystickButton *sound1; //button 7
-frc::JoystickButton *sound2; //button 8
-frc::JoystickButton *sound3; //button 9
-frc::JoystickButton *sound4; //button 11
-frc::JoystickButton *sound5; //button 12
-#endif
-
-//digital input creation
-frc::DigitalOutput playSound1(1);
-
-//controller creation
-frc::XboxController *soundController;
 
 //tank drive creation
 frc::DifferentialDrive *brit;
+
+//controller creation
+frc::XboxController *neighborlyInputDevice;
 
 //brit motors
 #ifdef Brit
@@ -79,7 +68,14 @@ frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 #endif
 
 //winch motor creation
-rev::CANSparkMax whinch(3, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax whench(0, rev::CANSparkMax::MotorType::kBrushless);
+
+//mike whipper motor creation
+ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {0};
+//mike whipper up/down solenoid
+frc::Solenoid viagra(3);
+//intake motor creation
+rev::CANSparkMax simp(0, rev::CANSparkMax::MotorType::kBrushless);
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -90,7 +86,7 @@ rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
-rev::CANEncoder pimp = whinch.GetEncoder();
+rev::CANEncoder pimp = whench.GetEncoder();
 
 //camera creation
 cs::UsbCamera fbi;
@@ -99,8 +95,6 @@ cs::UsbCamera fbi;
 frc::AnalogInput batman(0); // 230 - 630 is usable range
 //ultrsonic variable
 double distance;
-//color/proximity sensor
-rev::ColorSensorV3::ColorSensorV3 helenKeller;
 
 //speed var
 double speed;
@@ -133,6 +127,9 @@ frc::DigitalInput stopIt(9);
 int forwardBackwardDistance = 46; //23 is about 5 ft
 int turnDistance = 29;            //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
 
+//toggle variable for intake things
+int toggle = 1;
+
 //Dead Zone Variables
 double lonelyY;
 double lonelyTwist;
@@ -148,11 +145,8 @@ void Robot::RobotInit()
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
-  //setting up color/proximity sensor
-  helenKeller = rev::ColorSensorV3::ColorSensorV3(0);
-
   //setting up controller
-  //neighborlyInputDevice = new frc::XboxController(0);
+  neighborlyInputDevice = new frc::XboxController(0);
 
   //setting up Joystick
   lonelyStick = new frc::Joystick(0);
@@ -162,13 +156,6 @@ void Robot::RobotInit()
   lessSpeed = new frc::JoystickButton(lonelyStick, 5);
   moreSpeed = new frc::JoystickButton(lonelyStick, 3);
   putItIn = new frc::JoystickButton(lonelyStick, 1);
-#ifdef Sounds
-  sound1 = new frc::JoystickButton(lonelyStick, 7);
-  sound2 = new frc::JoystickButton(lonelyStick, 8);
-  sound3 = new frc::JoystickButton(lonelyStick, 9);
-  sound4 = new frc::JoystickButton(lonelyStick, 11);
-  sound5 = new frc::JoystickButton(lonelyStick, 12);
-#endif
 
   //setting up drivetrain
   brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
@@ -350,7 +337,6 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic()
 {
-
   //42 counts per rev. on neo
   if (spinReader1.GetVelocity() == 0)
     spinReader1.SetPosition(0);
@@ -414,6 +400,31 @@ void Robot::TeleopPeriodic()
   //pneumatic actuator
   roboMyRio.Set(putItIn->Get());
 
+  //mike whipper/intake code
+  if (neighborlyInputDevice->GetAButtonPressed())
+  {
+    toggle = -toggle;
+  }
+
+  if (toggle == 1)
+  {
+    viagra.Set(false);
+    simp.Set(0);
+    whippedCheese.Set(ControlMode::PercentOutput, 0);
+  }
+  else if (toggle == -1)
+  {
+    viagra.Set(true);
+    simp.Set(1);
+    whippedCheese.Set(ControlMode::PercentOutput, 1);
+  }
+
+  //winch code
+  if (neighborlyInputDevice->GetBButton())
+  {
+    whench.Set(.1);
+  }
+
   //drive train code
   if (fullCheech->Get())
   {
@@ -424,105 +435,9 @@ void Robot::TeleopPeriodic()
     speed = .4;
   }
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
-
-  /*//joystick values to movement in drivetrain
-brit->ArcadeDrive ( -lonelyStick->GetY () , lonelyStick->GetTwist () );*/
-
-  //controller values to movement in drivetrain
-  //brit->ArcadeDrive ( soundController->GetY ( frc::GenericHID::JoystickHand::kLeftHand ) , soundController->GetX ( frc::GenericHID::JoystickHand::kLeftHand ) );
-
-  //testing to use controller
-  /*double testingboi = soundController->GetX(frc::GenericHID::JoystickHand::kLeftHand);
-if ( testingboi > 0 ) {
-  std::cout << "x axis is goin \n";
-}*/
-#ifdef Sounds
-  /*if (lonelyStick.GetThrottle() == 1)
-  {
-    if (sound1 && sound2 && sound3)
-    {
-    }
-    if (sound1 && sound2 && sound4)
-    {
-    }
-    if (sound1 && sound2 && sound5)
-    {
-    }
-    if (sound1 && sound2 && sound6)
-    {
-    }
-  }
-  if (lonelyStick.GetThrottle() == 0)
-  {
-  }*/
-  if (sound3->Get())
-  {
-    playSound1.Set(true);
-  }
-  else
-  {
-    playSound1.Set(false);
-  }
-#endif
 }
 
-void Robot::TestPeriodic()
-{
-
-  /*
-//back motors following front motors
-//driveboi2.Follow (driveboi1,  false);
-//driveboi4.Follow (driveboi3,  false);
-//driveboi5.Follow (driveboi1,  false);
-//driveboi6.Follow (driveboi3,  false);
-
-//encoder math 
-forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-forwardBackwardDistance = 46; //23 is about 5 ft
-turnDistance = 29; //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
-
-if (oneSpin->Get()) {
-  driveboi1.Set(.1);
-  driveboi3.Set(-.1);
-} else if (nuke->Get()) {
-  driveboi1.Set(-.1);
-  driveboi3.Set(.1);
-} else if (moreSpeed->Get()) {
-  driveboi1.Set(-.1);
-  driveboi3.Set(-.1);
-} else if (lessSpeed->Get()) {
-  driveboi1.Set(.1);
-  driveboi3.Set(.1);
-} else if ( forwardBackward < -2*forwardBackwardDistance || forwardBackward > 2*forwardBackwardDistance || turn < -2*turnDistance || turn > 2*turnDistance ) {
-  driveboi1.Set(0);
-  driveboi3.Set(0);
-  spinReader1.SetPosition(0);
-  spinReader2.SetPosition(0);
-  spinReader3.SetPosition(0);
-  spinReader4.SetPosition(0);
-  }
-
-
-//Motor spins once with Joystick button
-//if (spinReader1.GetPosition() < 10) driveboi1.Set(.25);
-if (spinReader1.GetPosition() < r) driveboi1.Set(.1);
-else if (spinReader1.GetPosition() > r) driveboi1.Set(-.1);
-//else if (spinReader1.GetPosition() < 10 ) driveboi1.Set(-1/2*spinReader1.GetPosition()+5);
-else driveboi1.Set(0);
-
-//if (spinReader3.GetPosition() > -10) driveboi3.Set(-.25);
-if (spinReader3.GetPosition() > -r ) driveboi3.Set(-.1);
-else if (spinReader3.GetPosition() < -r) driveboi3.Set(.1);
-//else if (spinReader3.GetPosition() > -10 ) driveboi3.Set(1/2*spinReader1.GetPosition()-5);
-else driveboi3.Set(0);
-
-motor group = .99^encoder value
-motor group = -.99^encoder value
-make sure the opposite encoder stuff is the opposite otherwise as it counts up it will keep getting faster/ need two different equations
-driveboi1.Set(.99^spinReader1.GetPosition()) for the positive side
-*/
-}
+void Robot::TestPeriodic() {}
 
 void Robot::ZeroMotors()
 {
