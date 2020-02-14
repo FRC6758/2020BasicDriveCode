@@ -69,7 +69,8 @@ frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 
 //winch motor creation
 rev::CANSparkMax whench(0, rev::CANSparkMax::MotorType::kBrushless);
-
+//climber motor creation
+rev::CANSparkMax spoodermoon(11, rev::CANSparkMax::MotorType::kBrushless);
 //mike whipper motor creation
 ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {0};
 //mike whipper up/down solenoid
@@ -86,7 +87,10 @@ rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
 rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
 #endif
+//winch encoder creation
 rev::CANEncoder pimp = whench.GetEncoder();
+//climber encoder creation
+rev::CANEncoder gwen = spoodermoon.GetEncoder();
 
 //camera creation
 cs::UsbCamera fbi;
@@ -363,7 +367,7 @@ void Robot::TeleopPeriodic()
   frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 #endif
-
+  frc::SmartDashboard::PutNumber("climber position", gwen.GetPosition());
   //read sensor
   double distance = batman.GetValue(); // * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
@@ -425,6 +429,10 @@ void Robot::TeleopPeriodic()
   {
     whench.Set(.1);
   }
+
+  //climber code
+  spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand));
+  spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand));
 
   //drive train code
   if (fullCheech->Get())
