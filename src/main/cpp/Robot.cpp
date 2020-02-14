@@ -151,7 +151,7 @@ void Robot::RobotInit()
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
-  neighborlyInputDevice = new frc::XboxController(0);
+  neighborlyInputDevice = new frc::XboxController(1);
 
   //setting up Joystick
   lonelyStick = new frc::Joystick(0);
@@ -431,8 +431,14 @@ void Robot::TeleopPeriodic()
   }
 
   //climber code
-  spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand));
-  spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand));
+  if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) > 0)
+  {
+    spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand));
+  }
+  if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) > 0)
+  {
+    spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand));
+  }
 
   //drive train code
   if (fullCheech->Get())
