@@ -71,7 +71,7 @@ frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 rev::CANSparkMax whench(0, rev::CANSparkMax::MotorType::kBrushless);
 
 //mike whipper motor creation
-ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {0};
+ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {25};
 //mike whipper up/down solenoid
 frc::Solenoid viagra(3);
 //intake motor creation
@@ -417,7 +417,7 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(true);
     simp.Set(1);
-    whippedCheese.Set(ControlMode::PercentOutput, 1);
+    whippedCheese.Set(ControlMode::PercentOutput, .1);
   }
 
   //winch code
