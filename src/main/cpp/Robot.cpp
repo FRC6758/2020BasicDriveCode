@@ -72,7 +72,7 @@ rev::CANSparkMax whench(0, rev::CANSparkMax::MotorType::kBrushless);
 //climber motor creation
 rev::CANSparkMax spoodermoon(11, rev::CANSparkMax::MotorType::kBrushless);
 //mike whipper motor creation
-ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {0};
+ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {25};
 //mike whipper up/down solenoid
 frc::Solenoid viagra(3);
 //intake motor creation
@@ -151,7 +151,7 @@ void Robot::RobotInit()
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
-  neighborlyInputDevice = new frc::XboxController(0);
+  neighborlyInputDevice = new frc::XboxController(1);
 
   //setting up Joystick
   lonelyStick = new frc::Joystick(0);
@@ -406,9 +406,10 @@ void Robot::TeleopPeriodic()
   roboMyRio.Set(putItIn->Get());
 
   //mike whipper/intake code
-  if (neighborlyInputDevice->GetAButtonPressed())
+  if (neighborlyInputDevice->GetAButtonReleased())
   {
     toggle = -toggle;
+    std::cout << "a button";
   }
 
   if (toggle == 1)
@@ -421,7 +422,7 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(true);
     simp.Set(1);
-    whippedCheese.Set(ControlMode::PercentOutput, 1);
+    whippedCheese.Set(ControlMode::PercentOutput, .1);
   }
 
   //winch code
@@ -431,8 +432,19 @@ void Robot::TeleopPeriodic()
   }
 
   //climber code
-  spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand));
-  spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand));
+  if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) > 0)
+  {
+    spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) * .1);
+  }
+
+  else if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) > 0)
+  {
+    spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) * .1);
+  }
+  else
+  {
+    spoodermoon.Set(0);
+  }
 
   //drive train code
   if (fullCheech->Get())
