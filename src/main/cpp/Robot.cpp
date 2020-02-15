@@ -23,6 +23,7 @@
 #include <frc/DigitalOutput.h>
 #include <frc/PWMVictorSPX.h>
 #include "ctre/Phoenix.h"
+#include <time.h>
 
 #define Brit
 
@@ -68,7 +69,7 @@ frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 #endif
 
 //winch motor creation
-rev::CANSparkMax whench(0, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax whench(16, rev::CANSparkMax::MotorType::kBrushless);
 //climber motor creation
 rev::CANSparkMax spoodermoon(11, rev::CANSparkMax::MotorType::kBrushless);
 //mike whipper motor creation
@@ -76,7 +77,7 @@ ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {25};
 //mike whipper up/down solenoid
 frc::Solenoid viagra(3);
 //intake motor creation
-rev::CANSparkMax simp(0, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -403,7 +404,12 @@ void Robot::TeleopPeriodic()
   peerPressure1.Set(moreSpeed->Get());
 
   //pneumatic actuator
-  roboMyRio.Set(putItIn->Get());
+  if (putItIn->Get())
+  {
+    roboMyRio.Set(true);
+    Robot::Wait(.5);
+    roboMyRio.Set(false);
+  }
 
   //mike whipper/intake code
   if (neighborlyInputDevice->GetAButtonReleased())
@@ -421,7 +427,7 @@ void Robot::TeleopPeriodic()
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(1);
+    simp.Set(.1);
     whippedCheese.Set(ControlMode::PercentOutput, .1);
   }
 
@@ -492,6 +498,14 @@ void Robot::CounterClock()
 {
   driveboi1.Set(-.1);
   driveboi3.Set(-.1);
+}
+void Robot::Wait(double seconds)
+{
+  clock_t endwait;
+  endwait = clock() + seconds * CLOCKS_PER_SEC;
+  while (clock() < endwait)
+  {
+  }
 }
 
 #ifndef RUNNING_FRC_TESTS

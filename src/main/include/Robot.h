@@ -27,6 +27,7 @@ public:
   void Backwards();
   void Clock();
   void CounterClock();
+  void Wait(double);
 
 private:
   frc::SendableChooser<std::string> m_chooser;
