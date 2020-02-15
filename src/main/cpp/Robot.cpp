@@ -422,13 +422,13 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(false);
     simp.Set(0);
-    whippedCheese.Set(ControlMode::PercentOutput, 0);
+    whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
     simp.Set(.1);
-    whippedCheese.Set(ControlMode::PercentOutput, .1);
+    whippedCheese.Set(ControlMode::PercentOutput, .1); //should be .1 just testing
   }
 
   //winch code
