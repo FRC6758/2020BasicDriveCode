@@ -427,7 +427,7 @@ void Robot::TeleopPeriodic()
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(.1);
+    simp.Set(.5);
     whippedCheese.Set(ControlMode::PercentOutput, .1); //should be .1 just testing
   }
 
