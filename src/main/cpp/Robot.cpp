@@ -69,7 +69,7 @@ frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
 #endif
 
 //winch motor creation
-rev::CANSparkMax whench(16, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax whench(12, rev::CANSparkMax::MotorType::kBrushless);
 //climber motor creation
 rev::CANSparkMax spoodermoon(11, rev::CANSparkMax::MotorType::kBrushless);
 //mike whipper motor creation
@@ -115,6 +115,8 @@ enum Auton
   turn2 = 7,
   forward3 = 8,
   null = 9
+  /* altForw1 = 10
+  altTurn1 = 11 */
 };
 Auton step;
 
@@ -327,16 +329,115 @@ void Robot::AutonomousPeriodic()
   default:
     break;
   }
-  /*auton idea
-        go forward until limit switch hits wall or range gets to very low
-        dump balls
-        go backward until across the line
-        turn tward wall
-        go forward until limit switch hits wall or range gets to very low
-        back up a little
-        turn 90 degrees twards our side
-        turn on intake things
-        go forward under the trench*/
+
+  //Auton Code for if someone is in our spot
+  /*
+
+switch (step)
+  {
+  case forward1:
+  {
+    if (batman.GetValue() > 375) //230 - 630 usable range
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = dump;
+    }
+    break;
+  }
+  case dump:
+  {
+    roboMyRio.Set(true);
+    roboMyRio.Set(false);
+    step = back1;
+    break;
+  }
+  case back1:
+  {
+    if (forwardBackward < 92)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn1;
+    }
+    break;
+  }
+  case turn1:
+  {
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
+  }
+  case forward2:
+  {
+    if (batman.GetValue() > 250)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
+  }
+  case back2:
+  {
+    if (forwardBackward < 4.6)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn2;
+    }
+    break;
+  }
+  case turn2:
+  {
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward3;
+    }
+    break;
+  }
+  case forward3:
+  {
+    if (forwardBackward < 198.49)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = null;
+    }
+    break;
+  }
+  default:
+    break;
+  }
+
+*/
 }
 
 void Robot::TeleopInit() {}
@@ -368,9 +469,9 @@ void Robot::TeleopPeriodic()
   frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
 #endif
-  frc::SmartDashboard::PutNumber("climber position", gwen.GetPosition());
+  frc::SmartDashboard::PutNumber("climber position", -1 * gwen.GetPosition());
   //read sensor
-  double distance = batman.GetValue(); // * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
+  double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
@@ -411,11 +512,11 @@ void Robot::TeleopPeriodic()
     roboMyRio.Set(false);
   }
 
-  //mike whipper/intake code
+  //mike
+  //intake code
   if (neighborlyInputDevice->GetAButtonReleased())
   {
     toggle = -toggle;
-    std::cout << "a button";
   }
 
   if (toggle == 1)
@@ -427,28 +528,42 @@ void Robot::TeleopPeriodic()
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(.1);
-    whippedCheese.Set(ControlMode::PercentOutput, .1); //should be .1 just testing
+    simp.Set(.5);
+    whippedCheese.Set(ControlMode::PercentOutput, .8); //should be .1 just testing
   }
 
   //winch code
   if (neighborlyInputDevice->GetBButton())
   {
-    whench.Set(.1);
+    whench.Set(1);
+  }
+  else
+  {
+    whench.Set(0);
   }
 
   //climber code
   if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) > 0)
   {
-    spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) * .2);
+    spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) * .2);
   }
   else if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) > 0)
   {
-    spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) * .2);
+    spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) * .2);
   }
   else
   {
     spoodermoon.Set(0);
+  }
+
+  //Bumber to preset climbing positions (63 in and all the way down)
+  if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kRightHand) && -gwen.GetPosition() < 82)
+  {
+    spoodermoon.Set(-.2);
+  }
+  else if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kLeftHand) && -gwen.GetPosition() > 0)
+  {
+    spoodermoon.Set(.2);
   }
 
   //drive train code
@@ -458,7 +573,7 @@ void Robot::TeleopPeriodic()
   }
   else
   {
-    speed = .4;
+    speed = .8;
   }
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
 }
@@ -481,23 +596,23 @@ void Robot::ZeroMotors()
 
 void Robot::Forwards()
 {
-  driveboi1.Set(-.1);
-  driveboi3.Set(.1);
+  driveboi1.Set(-.5);
+  driveboi3.Set(.5);
 }
 void Robot::Backwards()
 {
-  driveboi1.Set(.1);
-  driveboi3.Set(-.1);
+  driveboi1.Set(.5);
+  driveboi3.Set(-.5);
 }
 void Robot::Clock()
 {
-  driveboi1.Set(.1);
-  driveboi3.Set(.1);
+  driveboi1.Set(.5);
+  driveboi3.Set(.5);
 }
 void Robot::CounterClock()
 {
-  driveboi1.Set(-.1);
-  driveboi3.Set(-.1);
+  driveboi1.Set(-.5);
+  driveboi3.Set(-.5);
 }
 void Robot::Wait(double seconds)
 {
