@@ -115,8 +115,9 @@ enum Auton
   turn2 = 7,
   forward3 = 8,
   null = 9
-  /* altForw1 = 10
-  altTurn1 = 11 */
+  /*forwardfromside = 10 (for the UltraSonic Side Shot)
+  turnsideshot = 11
+*/
 };
 Auton step;
 
@@ -226,6 +227,7 @@ void Robot::AutonomousPeriodic()
     // Default Auto goes here
   }*/
 
+  // Ultra Sonic Straight Shot (Best Option) (Not Tested)
   switch (step)
   {
   case forward1:
@@ -244,6 +246,7 @@ void Robot::AutonomousPeriodic()
   case dump:
   {
     roboMyRio.Set(true);
+    Wait(.5);
     roboMyRio.Set(false);
     step = back1;
     break;
@@ -330,11 +333,35 @@ void Robot::AutonomousPeriodic()
     break;
   }
 
-  //Auton Code for if someone is in our spot
+  //UltraSonic Side Shot (2nd Best Option) (Not Tested)
   /*
-
 switch (step)
   {
+  case forwardfromside:
+  {
+    if (forwardBackward < 92)
+    {
+     Robot::Forwards();
+    } 
+    else
+    {
+      ZeroMotors();
+      step = turnsideshot;
+    }
+    break;
+  }
+  case turnsideshot:
+  {
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward1;
+    }
+  }
   case forward1:
   {
     if (batman.GetValue() > 375) //230 - 630 usable range
@@ -351,6 +378,7 @@ switch (step)
   case dump:
   {
     roboMyRio.Set(true);
+    Wait(.5);
     roboMyRio.Set(false);
     step = back1;
     break;
@@ -436,7 +464,6 @@ switch (step)
   default:
     break;
   }
-
 */
 }
 
@@ -566,15 +593,19 @@ void Robot::TeleopPeriodic()
     spoodermoon.Set(.2);
   }
 
-  //drive train code
-  if (fullCheech->Get())
-  {
-    speed = 1;
-  }
+  //90 Degree turn code (Not Tested)
+  if ()
+    else if ()
+    {
+      Robot::Clock();
+    }
   else
   {
-    speed = .8;
+    ZeroMotors();
   }
+
+  speed = .8;
+
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
 }
 
