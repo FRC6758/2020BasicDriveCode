@@ -7,8 +7,26 @@
 
 #pragma once
 
+#include "cscore.h"
 #include <string>
-
+#include <frc/Joystick.h>
+#include <frc/Buttons/JoystickButton.h>
+#include <frc/drive/differentialDrive.h>
+#include "rev/CANSparkMax.h"
+#include <iostream>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <cameraserver/CameraServer.h>
+#include <frc/XboxController.h>
+#include <frc/Solenoid.h>
+#include <frc/DigitalInput.h>
+#include <cmath>
+#include <frc/Compressor.h>
+#include <frc/AnalogInput.h>
+#include <frc/DigitalOutput.h>
+#include <frc/PWMVictorSPX.h>
+#include "ctre/Phoenix.h"
+#include <time.h>
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 

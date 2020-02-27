@@ -1,31 +1,4 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-#include "cscore.h"
 #include "Robot.h"
-#include <frc/Joystick.h>
-#include <frc/Buttons/JoystickButton.h>
-#include <frc/drive/differentialDrive.h>
-#include "rev/CANSparkMax.h"
-#include <iostream>
-#include <frc/SpeedControllerGroup.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <cameraserver/CameraServer.h>
-#include <frc/XboxController.h>
-#include <frc/Solenoid.h>
-#include <frc/DigitalInput.h>
-#include <cmath>
-#include <frc/Compressor.h>
-#include <frc/AnalogInput.h>
-#include <frc/DigitalOutput.h>
-#include <frc/PWMVictorSPX.h>
-#include "ctre/Phoenix.h"
-#include <time.h>
-
-#define Brit
 
 //joystick creation
 frc::Joystick *lonelyStick;
@@ -43,7 +16,6 @@ frc::DifferentialDrive *brit;
 frc::XboxController *neighborlyInputDevice;
 
 //brit motors
-#ifdef Brit
 rev::CANSparkMax driveboi1(7, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi2(10, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax driveboi3(13, rev::CANSparkMax::MotorType::kBrushless);
@@ -54,19 +26,6 @@ rev::CANSparkMax driveboi6(9, rev::CANSparkMax::MotorType::kBrushless);
 //brit motor groups
 frc::SpeedControllerGroup speedyboiL(driveboi1, driveboi2, driveboi3);
 frc::SpeedControllerGroup speedyboiR(driveboi4, driveboi5, driveboi6);
-#endif
-
-#ifndef Brit
-//axel motors
-rev::CANSparkMax driveboi1(4, rev::CANSparkMax::MotorType::kBrushless);
-rev::CANSparkMax driveboi2(6, rev::CANSparkMax::MotorType::kBrushless);
-rev::CANSparkMax driveboi3(1, rev::CANSparkMax::MotorType::kBrushless);
-rev::CANSparkMax driveboi4(3, rev::CANSparkMax::MotorType::kBrushless);
-
-//axel motor croups
-frc::SpeedControllerGroup speedyboiR(driveboi1, driveboi2);
-frc::SpeedControllerGroup speedyboiL(driveboi3, driveboi4);
-#endif
 
 //winch motor creation
 rev::CANSparkMax whench(12, rev::CANSparkMax::MotorType::kBrushless);
@@ -84,10 +43,8 @@ rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
 rev::CANEncoder spinReader3 = driveboi3.GetEncoder();
 rev::CANEncoder spinReader4 = driveboi4.GetEncoder();
-#ifdef Brit
 rev::CANEncoder spinReader5 = driveboi5.GetEncoder();
 rev::CANEncoder spinReader6 = driveboi6.GetEncoder();
-#endif
 //winch encoder creation
 rev::CANEncoder pimp = whench.GetEncoder();
 //climber encoder creation
@@ -209,10 +166,8 @@ void Robot::AutonomousInit()
   step = forward1;
   driveboi2.Follow(driveboi1, /*invert*/ false);
   driveboi4.Follow(driveboi3, /*invert*/ false);
-#ifdef Brit
   driveboi5.Follow(driveboi1, /*invert*/ false);
   driveboi6.Follow(driveboi3, /*invert*/ false);
-#endif
 }
 
 void Robot::AutonomousPeriodic()
@@ -480,23 +435,19 @@ void Robot::TeleopPeriodic()
     spinReader3.SetPosition(0);
   if (spinReader4.GetVelocity() == 0)
     spinReader4.SetPosition(0);
-#ifdef Brit
   if (spinReader5.GetVelocity() == 0)
     spinReader5.SetPosition(0);
   if (spinReader6.GetVelocity() == 0)
     spinReader6.SetPosition(0);
-#endif
 
   //Read Encoder
   frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
-#ifdef Brit
   frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
-#endif
-  frc::SmartDashboard::PutNumber("climber position", -1 * gwen.GetPosition());
+  frc::SmartDashboard::PutNumber("climber position", -gwen.GetPosition());
   //read sensor
   double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
@@ -505,23 +456,11 @@ void Robot::TeleopPeriodic()
   notFarEnough = .05; /*todo: Adjust to driver's needs*/
   if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
   {
-#ifdef Brit
     lonelyY = lonelyStick->GetY();
-#endif
-
-#ifndef Brit
-    lonelyY = -lonelyStick->GetY();
-#endif
   }
   if (lonelyStick->GetTwist() < notFarEnough || lonelyStick->GetTwist() > -notFarEnough)
   {
-#ifdef Brit
     lonelyTwist = -lonelyStick->GetTwist();
-#endif
-
-#ifndef Brit
-    lonelyTwist = lonelyStick->GetTwist();
-#endif
   }
 
   //making the compressor compress
@@ -594,15 +533,17 @@ void Robot::TeleopPeriodic()
   }
 
   //90 Degree turn code (Not Tested)
-  if ()
-    else if ()
-    {
-      Robot::Clock();
-    }
+  /*if ()
+  {
+  }
+  else if ()
+  {
+    Robot::Clock();
+  }
   else
   {
     ZeroMotors();
-  }
+  }*/
 
   speed = .8;
 
@@ -619,10 +560,8 @@ void Robot::ZeroMotors()
   spinReader2.SetPosition(0);
   spinReader3.SetPosition(0);
   spinReader4.SetPosition(0);
-#ifdef Brit
   spinReader5.SetPosition(0);
   spinReader6.SetPosition(0);
-#endif
 }
 
 void Robot::Forwards()
