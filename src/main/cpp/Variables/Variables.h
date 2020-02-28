@@ -64,16 +64,16 @@ double speed;
 //auton steps variable thing
 enum Auton
 {
-    forward1 = 1,
-    dump = 2,
-    back1 = 3,
-    turn1 = 4,
-    forward2 = 5,
-    back2 = 6,
-    turn2 = 7,
-    forward3 = 8,
-    null = 9
-    /*forwardfromside = 10 (for the UltraSonic Side Shot)
+  forward1 = 1,
+  dump = 2,
+  back1 = 3,
+  turn1 = 4,
+  forward2 = 5,
+  back2 = 6,
+  turn2 = 7,
+  forward3 = 8,
+  null = 9
+  /*forwardfromside = 10 (for the UltraSonic Side Shot)
   turnsideshot = 11
 */
 };

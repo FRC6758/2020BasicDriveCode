@@ -1,8 +1,8 @@
 #pragma once
 #include <Robot.h>
-#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\Variables\Variables.h>
+#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
 
-void Robot::AutonomousInit2()
+void Robot::AutownInit()
 {
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
@@ -23,7 +23,7 @@ void Robot::AutonomousInit2()
   driveboi6.Follow(driveboi3, /*invert*/ false);
 }
 
-void Robot::AutonomousPeriodic2()
+void Robot::AutownPeriodic()
 {
 
   double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
