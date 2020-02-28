@@ -1,6 +1,6 @@
 #include "Robot.h"
-#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\Auton\Auton.h>
-#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\Variables\Variables.h>
+#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\cpp\Auton\Autown.h>
+#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
 
 void Robot::RobotInit()
 {
@@ -53,12 +53,12 @@ void Robot::RobotPeriodic()
 
 void Robot::AutonomousInit()
 {
-  Robot::AutonomousInit2();
+  Robot::AutownInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-  Robot::AutonomousPeriodic2();
+  Robot::AutownPeriodic();
 }
 
 void Robot::TeleopInit()
