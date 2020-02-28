@@ -4,13 +4,11 @@
 
 void Robot::RobotInit()
 {
-  //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  //frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
-  //setting up camera
+  //setting up cameras
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
+  cia = frc::CameraServer::GetInstance()->StartAutomaticCapture(1);
+  cia.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
   neighborlyInputDevice = new frc::XboxController(1);
@@ -28,28 +26,9 @@ void Robot::RobotInit()
   brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
 }
 
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
 void Robot::RobotPeriodic()
 {
 }
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString line to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional comparisons to the
- * if-else structure below with additional strings. If using the SendableChooser
- * make sure to add them to the chooser code above as well.
- */
 
 void Robot::AutonomousInit()
 {
@@ -89,12 +68,13 @@ void Robot::TeleopPeriodic()
   frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
   frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
   frc::SmartDashboard::PutNumber("climber position", -gwen.GetPosition());
+
   //read sensor
   double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
-  notFarEnough = .05; /*todo: Adjust to driver's needs*/
+  notFarEnough = .05;
   if (-lonelyStick->GetY() < notFarEnough || -lonelyStick->GetY() > -notFarEnough)
   {
     lonelyY = lonelyStick->GetY();
@@ -119,8 +99,7 @@ void Robot::TeleopPeriodic()
     roboMyRio.Set(false);
   }
 
-  //mike
-  //intake code
+  //mike whipper and intake code
   if (neighborlyInputDevice->GetAButtonReleased())
   {
     toggle = -toggle;
@@ -130,13 +109,13 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(false);
     simp.Set(0);
-    whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
+    whippedCheese.Set(ControlMode::PercentOutput, 0);
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
     simp.Set(.5);
-    whippedCheese.Set(ControlMode::PercentOutput, .8); //should be .1 just testing
+    whippedCheese.Set(ControlMode::PercentOutput, .8);
   }
 
   //winch code

@@ -53,6 +53,7 @@ rev::CANEncoder gwen = spoodermoon.GetEncoder();
 
 //camera creation
 cs::UsbCamera fbi;
+cs::UsbCamera cia;
 
 //ultrasonic range sensor creation
 frc::AnalogInput batman(0); // 230 - 630 is usable range
