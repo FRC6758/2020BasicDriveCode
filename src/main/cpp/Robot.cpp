@@ -533,8 +533,9 @@ void Robot::TeleopPeriodic()
   }
 
   //90 Degree turn code (Not Tested)
-  /*if ()
+  if ()
   {
+    Robot::CounterClock();
   }
   else if ()
   {
@@ -543,7 +544,7 @@ void Robot::TeleopPeriodic()
   else
   {
     ZeroMotors();
-  }*/
+  }
 
   speed = .8;
 
