@@ -109,12 +109,14 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(false);
     simp.Set(0);
+    simp2.Set(0);
     whippedCheese.Set(ControlMode::PercentOutput, 0);
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
     simp.Set(.5);
+    simp.Set(-0.5);
     whippedCheese.Set(ControlMode::PercentOutput, .8);
   }
 

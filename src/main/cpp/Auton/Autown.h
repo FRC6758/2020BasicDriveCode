@@ -273,4 +273,50 @@ switch (step)
     break;
   }
 */
-}
+
+  //basic auton to collect 2 balls only
+  switch (step)
+  {
+  case forward1:
+  {
+    if (forwardBackward < 198.49)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = backwards1;
+    }
+    break;
+  }
+  case back1:
+    if (forwardBackward > 198.49)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = null;
+    }
+    break;
+  }
+
+  //auton using the limit switch to dump
+  switch (step)
+  {
+  case forward2:
+  {
+    if (stopIt == false)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back1;
+    }
+    break;
+  }
+  }

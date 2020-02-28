@@ -38,6 +38,7 @@ ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {25};
 frc::Solenoid viagra(3);
 //intake motor creation
 rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax simp2(3, rev::CANSparkMax::MotorType::kBrushless);
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
