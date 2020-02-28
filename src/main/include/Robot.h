@@ -36,7 +36,9 @@ public:
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;
+  void AutonomousInit2();
   void AutonomousPeriodic() override;
+  void AutonomousPeriodic2();
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
