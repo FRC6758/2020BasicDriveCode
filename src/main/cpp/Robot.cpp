@@ -478,8 +478,7 @@ void Robot::TeleopPeriodic()
     roboMyRio.Set(false);
   }
 
-  //mike
-  //intake code
+  //mike whipper and intake code
   if (neighborlyInputDevice->GetAButtonReleased())
   {
     toggle = -toggle;
