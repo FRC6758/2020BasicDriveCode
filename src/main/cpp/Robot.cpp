@@ -493,11 +493,11 @@ void Robot::TeleopPeriodic()
   {
     estop = -estop;
   }
-  else if (estop == -1)
+  else if (estop == 1)
   {
     simp.Set(0);
   }
-  else if (estop == 1)
+  else if (estop == -1)
   {
     simp.Set(-1);
   }
@@ -511,14 +511,14 @@ void Robot::TeleopPeriodic()
   else if (toggle == 1)
   {
     viagra.Set(false);
-    //simp.Set(0);
+    simp.Set(0);
     egirl.Set(0);
     whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
-    //simp.Set(-1);
+    simp.Set(-1);
     egirl.Set(1);
     whippedCheese.Set(ControlMode::PercentOutput, 1); //should be .1 just testing
   }
