@@ -1,5 +1,4 @@
 #include "Robot.h"
-#include <C:\Users\robok\Documents\2020BasicDriveCode\src\main\cpp\Auton\Autown.h>
 #include <C:\Users\robok\Documents\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
 
 void Robot::RobotInit()
@@ -22,8 +21,62 @@ void Robot::RobotInit()
   moreSpeed = new frc::JoystickButton(lonelyStick, 3);
   putItIn = new frc::JoystickButton(lonelyStick, 1);
 
+  //brit motors
+  driveboi1 = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
+  driveboi2 = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
+  driveboi3 = new rev::CANSparkMax(13, rev::CANSparkMax::MotorType::kBrushless);
+  driveboi4 = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
+  driveboi5 = new rev::CANSparkMax(8, rev::CANSparkMax::MotorType::kBrushless);
+  driveboi6 = new rev::CANSparkMax(9, rev::CANSparkMax::MotorType::kBrushless);
+
+  //brit motor groups
+  speedyboiL = new frc::SpeedControllerGroup(*driveboi1, *driveboi2, *driveboi3);
+  speedyboiR = new frc::SpeedControllerGroup(*driveboi4, *driveboi5, *driveboi6);
+
+  //Encoder creation
+  spinReader1 = driveboi1->GetEncoder();
+  spinReader2 = driveboi2->GetEncoder();
+  spinReader3 = driveboi3->GetEncoder();
+  spinReader4 = driveboi4->GetEncoder();
+  spinReader5 = driveboi5->GetEncoder();
+  spinReader6 = driveboi6->GetEncoder();
+
+  //winch encoder creation
+  pimp = whench->GetEncoder();
+  //climber encoder creation
+  gwen = spoodermoon->GetEncoder();
+
+  //winch motor creation
+  whench = new rev::CANSparkMax(12, rev::CANSparkMax::MotorType::kBrushless);
+  //climber motor creation
+  spoodermoon = new rev::CANSparkMax(11, rev::CANSparkMax::MotorType::kBrushless);
+  //mike whipper motor creation
+  whippedCheese = new ctre::phoenix::motorcontrol::can::VictorSPX(25);
+  //mike whipper up/down solenoid
+  viagra = new frc::Solenoid(3);
+  //intake motor creation
+  simp = new rev::CANSparkMax(1, rev::CANSparkMax::MotorType::kBrushless);
+  egirl = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
+
   //setting up drivetrain
-  brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
+  brit = new frc::DifferentialDrive(*speedyboiL, *speedyboiR);
+
+  //sonlenoid
+  peerPressure1 = new frc::Solenoid(0);
+  peerPressure2 = new frc::Solenoid(1);
+  roboMyRio = new frc::Solenoid(2);
+
+  //compressor
+  bonusPressure = new frc::Compressor(0);
+
+  //limit switch
+  stopIt = new frc::DigitalInput(9);
+
+  //setting up us sensor
+  batman = new frc::AnalogInput(0);
+
+  //mike whipper and intake variable
+  toggle = 1;
 }
 
 void Robot::RobotPeriodic()
@@ -70,7 +123,7 @@ void Robot::TeleopPeriodic()
   frc::SmartDashboard::PutNumber("climber position", -gwen.GetPosition());
 
   //read sensor
-  double distance = batman.GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
+  double distance = batman->GetValue() * 0.393701; //multiplying by 0.393701 converts the sonar value to inches (hopefully)
   frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
 
   // Code for deadzones on joystick
@@ -85,18 +138,18 @@ void Robot::TeleopPeriodic()
   }
 
   //making the compressor compress
-  bonusPressure.SetClosedLoopControl(true);
+  bonusPressure->SetClosedLoopControl(true);
 
   //gearbox shifting code
-  peerPressure2.Set(lessSpeed->Get());
-  peerPressure1.Set(moreSpeed->Get());
+  peerPressure2->Set(lessSpeed->Get());
+  peerPressure1->Set(moreSpeed->Get());
 
   //pneumatic actuator
   if (putItIn->Get())
   {
-    roboMyRio.Set(true);
+    roboMyRio->Set(true);
     Robot::Wait(.5);
-    roboMyRio.Set(false);
+    roboMyRio->Set(false);
   }
 
   //mike whipper and intake code
@@ -107,51 +160,51 @@ void Robot::TeleopPeriodic()
 
   if (toggle == 1)
   {
-    viagra.Set(false);
-    simp.Set(0);
-    simp2.Set(0);
-    whippedCheese.Set(ControlMode::PercentOutput, 0);
+    viagra->Set(false);
+    simp->Set(0);
+    egirl->Set(0);
+    whippedCheese->Set(ControlMode::PercentOutput, 0);
   }
   else if (toggle == -1)
   {
-    viagra.Set(true);
-    simp.Set(-.5);
-    simp.Set(0.5);
-    whippedCheese.Set(ControlMode::PercentOutput, .8);
+    viagra->Set(true);
+    simp->Set(.5);
+    egirl->Set(-.5);
+    whippedCheese->Set(ControlMode::PercentOutput, 0.8);
   }
 
   //winch code
   if (neighborlyInputDevice->GetBButton())
   {
-    whench.Set(1);
+    whench->Set(1);
   }
   else
   {
-    whench.Set(0);
+    whench->Set(0);
   }
 
   //climber code
   if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) > 0)
   {
-    spoodermoon.Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) * .2);
+    spoodermoon->Set(-neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kRightHand) * .2);
   }
   else if (neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) > 0)
   {
-    spoodermoon.Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) * .2);
+    spoodermoon->Set(neighborlyInputDevice->GetTriggerAxis(frc::GenericHID::JoystickHand::kLeftHand) * .2);
   }
   else
   {
-    spoodermoon.Set(0);
+    spoodermoon->Set(0);
   }
 
   //Bumber to preset climbing positions (63 in and all the way down)
   if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kRightHand) && -gwen.GetPosition() < 82)
   {
-    spoodermoon.Set(-.2);
+    spoodermoon->Set(-.2);
   }
   else if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kLeftHand) && -gwen.GetPosition() > 0)
   {
-    spoodermoon.Set(.2);
+    spoodermoon->Set(.2);
   }
 
   //90 Degree turn code (Not Tested)

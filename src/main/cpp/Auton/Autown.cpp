@@ -1,6 +1,9 @@
-#pragma once
 #include <Robot.h>
 #include <C:\Users\robok\Documents\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
+
+//#define USSide
+//#define USStraight
+#define TwoBalls
 
 void Robot::AutownInit()
 {
@@ -17,30 +20,34 @@ void Robot::AutownInit()
   }*/
 
   step = forward1;
-  driveboi2.Follow(driveboi1, /*invert*/ false);
-  driveboi4.Follow(driveboi3, /*invert*/ false);
-  driveboi5.Follow(driveboi1, /*invert*/ false);
-  driveboi6.Follow(driveboi3, /*invert*/ false);
+  driveboi2->Follow(*driveboi1, /*invert*/ false);
+  driveboi4->Follow(*driveboi3, /*invert*/ false);
+  driveboi5->Follow(*driveboi1, /*invert*/ false);
+  driveboi6->Follow(*driveboi3, /*invert*/ false);
+
+  //auton variables
+  forwardBackwardDistance = 46; //23 is about 5 ft
+  turnDistance = 29;            //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
 }
 
 void Robot::AutownPeriodic()
 {
-
   double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-  /*if (m_autoSelected == kAutoNameCustom) {
+/*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } 
   else {
     // Default Auto goes here
   }*/
 
-  // Ultra Sonic Straight Shot (Best Option) (Not Tested)
+// Ultra Sonic Straight Shot (Best Option) (Not Tested)
+#ifdef USStraight
+  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   switch (step)
   {
   case forward1:
   {
-    if (batman.GetValue() > 375) //230 - 630 usable range
+    if (batman->GetValue() > 375) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -53,9 +60,9 @@ void Robot::AutownPeriodic()
   }
   case dump:
   {
-    roboMyRio.Set(true);
+    roboMyRio->Set(true);
     Wait(.5);
-    roboMyRio.Set(false);
+    roboMyRio->Set(false);
     step = back1;
     break;
   }
@@ -87,7 +94,7 @@ void Robot::AutownPeriodic()
   }
   case forward2:
   {
-    if (batman.GetValue() > 250)
+    if (batman->GetValue() > 250)
     {
       Robot::Forwards();
     }
@@ -140,25 +147,27 @@ void Robot::AutownPeriodic()
   default:
     break;
   }
+#endif
 
-  //UltraSonic Side Shot (2nd Best Option) (Not Tested)
-  /*
-switch (step)
+//UltraSonic Side Shot (2nd Best Option) (Not Tested)
+#ifdef USSide
+  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+  switch (step)
   {
-  case forwardfromside:
+  case forward1:
   {
     if (forwardBackward < 92)
     {
-     Robot::Forwards();
-    } 
+      Robot::Forwards();
+    }
     else
     {
       ZeroMotors();
-      step = turnsideshot;
+      step = turn1;
     }
     break;
   }
-  case turnsideshot:
+  case turn1:
   {
     if (turn < 14.5)
     {
@@ -172,7 +181,7 @@ switch (step)
   }
   case forward1:
   {
-    if (batman.GetValue() > 375) //230 - 630 usable range
+    if (batman->GetValue() > 375) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -185,9 +194,9 @@ switch (step)
   }
   case dump:
   {
-    roboMyRio.Set(true);
+    roboMyRio->Set(true);
     Wait(.5);
-    roboMyRio.Set(false);
+    roboMyRio->Set(false);
     step = back1;
     break;
   }
@@ -219,7 +228,7 @@ switch (step)
   }
   case forward2:
   {
-    if (batman.GetValue() > 250)
+    if (batman->GetValue() > 250)
     {
       Robot::Forwards();
     }
@@ -272,9 +281,10 @@ switch (step)
   default:
     break;
   }
-*/
+#endif
 
-  //basic auton to collect 2 balls only
+//basic auton to collect 2 balls only
+#ifdef TwoBalls
   switch (step)
   {
   case forward1:
@@ -286,7 +296,7 @@ switch (step)
     else
     {
       ZeroMotors();
-      step = backwards1;
+      step = back1;
     }
     break;
   }
@@ -301,63 +311,51 @@ switch (step)
       step = null;
     }
     break;
-  }
 
-  //auton using the limit switch to dump
-  switch (step)
-  {
-  case forward2:
-  {
-    if (stopIt == false)
-    {
-      Robot::Forwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = back1;
-    }
+  default:
+
     break;
   }
+#endif
+}
 
-    void Robot::ZeroMotors()
-    {
-      driveboi1.Set(0);
-      driveboi3.Set(0);
-      spinReader1.SetPosition(0);
-      spinReader2.SetPosition(0);
-      spinReader3.SetPosition(0);
-      spinReader4.SetPosition(0);
-      spinReader5.SetPosition(0);
-      spinReader6.SetPosition(0);
-    }
+void Robot::ZeroMotors()
+{
+  driveboi1->Set(0);
+  driveboi3->Set(0);
+  spinReader1.SetPosition(0);
+  spinReader2.SetPosition(0);
+  spinReader3.SetPosition(0);
+  spinReader4.SetPosition(0);
+  spinReader5.SetPosition(0);
+  spinReader6.SetPosition(0);
+}
 
-    void Robot::Forwards()
-    {
-      driveboi1.Set(-.5);
-      driveboi3.Set(.5);
-    }
-    void Robot::Backwards()
-    {
-      driveboi1.Set(.5);
-      driveboi3.Set(-.5);
-    }
-    void Robot::Clock()
-    {
-      driveboi1.Set(.5);
-      driveboi3.Set(.5);
-    }
-    void Robot::CounterClock()
-    {
-      driveboi1.Set(-.5);
-      driveboi3.Set(-.5);
-    }
-    void Robot::Wait(double seconds)
-    {
-      clock_t endwait;
-      endwait = clock() + seconds * CLOCKS_PER_SEC;
-      while (clock() < endwait)
-      {
-      }
-    }
+void Robot::Forwards()
+{
+  driveboi1->Set(-.5);
+  driveboi3->Set(.5);
+}
+void Robot::Backwards()
+{
+  driveboi1->Set(.5);
+  driveboi3->Set(-.5);
+}
+void Robot::Clock()
+{
+  driveboi1->Set(.5);
+  driveboi3->Set(.5);
+}
+void Robot::CounterClock()
+{
+  driveboi1->Set(-.5);
+  driveboi3->Set(-.5);
+}
+void Robot::Wait(double seconds)
+{
+  clock_t endwait;
+  endwait = clock() + seconds * CLOCKS_PER_SEC;
+  while (clock() < endwait)
+  {
   }
+}
