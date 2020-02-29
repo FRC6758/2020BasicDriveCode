@@ -39,6 +39,8 @@ frc::Solenoid viagra(3);
 rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax egirl(3, rev::CANSparkMax::MotorType::kBrushless);
 
+ctre::phoenix::motorcontrol::can::VictorSPX heli = {26};
+
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
 rev::CANEncoder spinReader2 = driveboi2.GetEncoder();
@@ -173,6 +175,11 @@ void Robot::AutonomousInit()
   driveboi4.Follow(driveboi3, /*invert*/ false);
   driveboi5.Follow(driveboi1, /*invert*/ false);
   driveboi6.Follow(driveboi3, /*invert*/ false);
+
+  //limit switch moving thingy
+  heli.Set(ControlMode::PercentOutput, .2);
+  wait(.01);
+  heli.Set(ControlMode::PercentOutput, 0);
 }
 
 void Robot::AutonomousPeriodic()
@@ -427,7 +434,13 @@ switch (step)
 */
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit()
+{
+  //limit switch moving thingy but the other way
+  heli.Set(ControlMode::PercentOutput, -.2);
+  wait(.009);
+  heli.Set(ControlMode::PercentOutput, 0);
+}
 
 void Robot::TeleopPeriodic()
 {
