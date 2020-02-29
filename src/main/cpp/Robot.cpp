@@ -1,6 +1,6 @@
 #include "Robot.h"
-#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\cpp\Auton\Autown.h>
-#include <C:\Users\xv63yk\Documents\GitHub\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
+#include <C:\Users\robok\Documents\2020BasicDriveCode\src\main\cpp\Auton\Autown.h>
+#include <C:\Users\robok\Documents\2020BasicDriveCode\src\main\cpp\Variables\Variables.h>
 
 void Robot::RobotInit()
 {
@@ -115,8 +115,8 @@ void Robot::TeleopPeriodic()
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(.5);
-    simp.Set(-0.5);
+    simp.Set(-.5);
+    simp.Set(0.5);
     whippedCheese.Set(ControlMode::PercentOutput, .8);
   }
 
@@ -173,47 +173,6 @@ void Robot::TeleopPeriodic()
 }
 
 void Robot::TestPeriodic() {}
-
-void Robot::ZeroMotors()
-{
-  driveboi1.Set(0);
-  driveboi3.Set(0);
-  spinReader1.SetPosition(0);
-  spinReader2.SetPosition(0);
-  spinReader3.SetPosition(0);
-  spinReader4.SetPosition(0);
-  spinReader5.SetPosition(0);
-  spinReader6.SetPosition(0);
-}
-
-void Robot::Forwards()
-{
-  driveboi1.Set(-.5);
-  driveboi3.Set(.5);
-}
-void Robot::Backwards()
-{
-  driveboi1.Set(.5);
-  driveboi3.Set(-.5);
-}
-void Robot::Clock()
-{
-  driveboi1.Set(.5);
-  driveboi3.Set(.5);
-}
-void Robot::CounterClock()
-{
-  driveboi1.Set(-.5);
-  driveboi3.Set(-.5);
-}
-void Robot::Wait(double seconds)
-{
-  clock_t endwait;
-  endwait = clock() + seconds * CLOCKS_PER_SEC;
-  while (clock() < endwait)
-  {
-  }
-}
 
 #ifndef RUNNING_FRC_TESTS
 int main()
