@@ -37,6 +37,7 @@ ctre::phoenix::motorcontrol::can::VictorSPX whippedCheese = {25};
 frc::Solenoid viagra(3);
 //intake motor creation
 rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
+rev::CANSparkMax egirl(3, rev::CANSparkMax::MotorType::kBrushless);
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -488,13 +489,15 @@ void Robot::TeleopPeriodic()
   {
     viagra.Set(false);
     simp.Set(0);
+    egirl.Set(0);
     whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(.5);
-    whippedCheese.Set(ControlMode::PercentOutput, .8); //should be .1 just testing
+    simp.Set(-1);
+    egirl.Set(1);
+    whippedCheese.Set(ControlMode::PercentOutput, 1); //should be .1 just testing
   }
 
   //winch code
@@ -532,7 +535,7 @@ void Robot::TeleopPeriodic()
   }
 
   //90 Degree turn code (Not Tested)
-  if ()
+  /*if ()
   {
     Robot::CounterClock();
   }
@@ -544,7 +547,7 @@ void Robot::TeleopPeriodic()
   {
     ZeroMotors();
   }
-
+*/
   speed = .8;
 
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
