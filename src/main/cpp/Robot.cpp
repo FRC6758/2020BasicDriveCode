@@ -1,5 +1,8 @@
 #include "Robot.h"
 
+#define StraightShot
+// #define SideShot
+
 //joystick creation
 frc::Joystick *lonelyStick;
 frc::JoystickButton *nuke;       //button 4
@@ -189,23 +192,24 @@ void Robot::AutonomousInit()
 }
 
 void Robot::AutonomousPeriodic()
-{ /*
+{
 
-  // double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  // double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-  // if (m_autoSelected == kAutoNameCustom) {
-  //   // Custom Auto goes here
-  // } 
-  // else {
-  //   // Default Auto goes here
-  // }
+// double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+// double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+// if (m_autoSelected == kAutoNameCustom) {
+//   // Custom Auto goes here
+// }
+// else {
+//   // Default Auto goes here
+// }
 
-  // Ultra Sonic Straight Shot (Best Option) (Not Tested)
+//Straight Shot (Best Option) (Not Tested)
+#ifdef StraightShot
   switch (step)
   {
   case forward1:
   {
-    if (batman.GetValue() > 375) //230 - 630 usable range
+    if (!stopIt.Get()) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -252,7 +256,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (batman.GetValue() > 250)
+    if (!stopIt.Get())
     {
       Robot::Forwards();
     }
@@ -305,9 +309,10 @@ void Robot::AutonomousPeriodic()
   default:
     break;
   }
+#endif
 
   //UltraSonic Side Shot (2nd Best Option) (Not Tested)
-
+#ifdef SideShot
   switch (step)
   {
   case forwardfromside:
@@ -337,7 +342,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward1:
   {
-    if (batman.GetValue() > 375) //230 - 630 usable range
+    if (!stopIt.Get()) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -384,7 +389,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (batman.GetValue() > 250)
+    if (!stopIt.Get())
     {
       Robot::Forwards();
     }
@@ -437,7 +442,7 @@ void Robot::AutonomousPeriodic()
   default:
     break;
   }
-  */
+#endif
 }
 
 void Robot::TeleopInit()
