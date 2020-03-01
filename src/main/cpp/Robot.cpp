@@ -39,7 +39,9 @@ frc::Solenoid viagra(3);
 rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax egirl(3, rev::CANSparkMax::MotorType::kBrushless);
 
+//limit switch move thing
 ctre::phoenix::motorcontrol::can::VictorSPX heli = {26};
+int x;
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -177,22 +179,26 @@ void Robot::AutonomousInit()
   driveboi6.Follow(driveboi3, /*invert*/ false);
 
   //limit switch moving thingy
-  heli.Set(ControlMode::PercentOutput, .2);
-  wait(.01);
-  heli.Set(ControlMode::PercentOutput, 0);
+  if (1 == 1)
+  {
+    heli.Set(ControlMode::PercentOutput, -1);
+    Wait(.09);
+    heli.Set(ControlMode::PercentOutput, 0);
+    x = 1;
+  }
 }
 
 void Robot::AutonomousPeriodic()
-{
+{ /*
 
-  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-  /*if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } 
-  else {
-    // Default Auto goes here
-  }*/
+  // double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+  // double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+  // if (m_autoSelected == kAutoNameCustom) {
+  //   // Custom Auto goes here
+  // } 
+  // else {
+  //   // Default Auto goes here
+  // }
 
   // Ultra Sonic Straight Shot (Best Option) (Not Tested)
   switch (step)
@@ -301,15 +307,15 @@ void Robot::AutonomousPeriodic()
   }
 
   //UltraSonic Side Shot (2nd Best Option) (Not Tested)
-  /*
-switch (step)
+
+  switch (step)
   {
   case forwardfromside:
   {
     if (forwardBackward < 92)
     {
-     Robot::Forwards();
-    } 
+      Robot::Forwards();
+    }
     else
     {
       ZeroMotors();
@@ -431,19 +437,33 @@ switch (step)
   default:
     break;
   }
-*/
+  */
 }
 
 void Robot::TeleopInit()
 {
   //limit switch moving thingy but the other way
-  heli.Set(ControlMode::PercentOutput, -.2);
-  wait(.009);
-  heli.Set(ControlMode::PercentOutput, 0);
+  if (x == 1)
+  {
+    heli.Set(ControlMode::PercentOutput, 1);
+    Wait(.075);
+    heli.Set(ControlMode::PercentOutput, 0);
+    x = 2;
+  }
 }
 
 void Robot::TeleopPeriodic()
 {
+  //limit switch move button
+  if (neighborlyInputDevice->GetStartButton())
+  {
+    heli.Set(ControlMode::PercentOutput, .1);
+  }
+  else
+  {
+    heli.Set(ControlMode::PercentOutput, 0);
+  }
+
   //42 counts per rev. on neo
   if (spinReader1.GetVelocity() == 0)
     spinReader1.SetPosition(0);
