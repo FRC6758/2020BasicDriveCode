@@ -111,6 +111,10 @@ int estop = 1;
 double forwardBackward;
 double turn;
 
+//turn variables
+int right;
+int left;
+
 void Robot::RobotInit()
 {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -599,17 +603,27 @@ void Robot::TeleopPeriodic()
   }
 
   //90 Degrees turn code (Not Tested)
-  if (fullCheech->Get() && turn > -10)
+  if (fullCheech->Get())
+  {
+    right = 1;
+  }
+  else if (putItIn->Get())
+  {
+    left = 1;
+  }
+
+  if (right == 1 && turn > -10)
   {
     Robot::CounterClock();
   }
-  else if (putItIn->Get() && turn < 10)
+  else if (left == 1 && turn < 10)
   {
     Robot::Clock();
   }
   else
   {
-    ZeroMotors();
+    right = 0;
+    left = 0;
   }
 
   speed = .8;
@@ -622,7 +636,7 @@ void Robot::TestPeriodic() {}
 void Robot::ZeroMotors()
 {
   driveboi1.Set(0);
-  driveboi3.Set(0);
+  driveboi5.Set(0);
   spinReader1.SetPosition(0);
   spinReader2.SetPosition(0);
   spinReader3.SetPosition(0);
