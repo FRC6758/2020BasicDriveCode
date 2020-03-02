@@ -81,9 +81,6 @@ enum Auton
   turn2 = 7,
   forward3 = 8,
   null = 9
-  /*forwardfromside = 10 (for the UltraSonic Side Shot)
-  turnsideshot = 11
-*/
 };
 Auton step;
 
@@ -99,10 +96,6 @@ frc::Compressor bonusPressure(0);
 //limit switch creation
 frc::DigitalInput stopIt(9);
 
-//revolution var
-int forwardBackwardDistance = 46; //23 is about 5 ft
-int turnDistance = 29;            //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
-
 //toggle variable for intake things
 int toggle = 1;
 
@@ -113,6 +106,10 @@ double notFarEnough;
 
 //intake stop var
 int estop = 1;
+
+//encoder variables
+double forwardBackward;
+double turn;
 
 void Robot::RobotInit()
 {
@@ -152,6 +149,8 @@ void Robot::RobotInit()
  */
 void Robot::RobotPeriodic()
 {
+  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
 }
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -184,399 +183,290 @@ void Robot::AutonomousInit()
   driveboi3.Follow(driveboi1, /*invert*/ false);
   driveboi6.Follow(driveboi5, /*invert*/ false);
 
-  //limit switch moving thingy
-  if (1 == 1)
-  {
-    heli.Set(ControlMode::PercentOutput, -1);
-    Wait(.09);
-    heli.Set(ControlMode::PercentOutput, 0);
-    x = 1;
-  }
+  // //limit switch moving thingy
+  // if (1 == 1)
+  // {
+  //   heli.Set(ControlMode::PercentOutput, -1);
+  //   Wait(.09);
+  //   heli.Set(ControlMode::PercentOutput, 0);
+  //   x = 1;
+  // }
 }
 
 void Robot::AutonomousPeriodic()
 {
-
-  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   // if (m_autoSelected == kAutoNameCustom) {
   //   // Custom Auto goes here
   // }
   // else {
   //   // Default Auto goes here
-}
+//  }
 
 //Straight Shot (Best Option) (Not Tested)
 #ifdef StraightShot
-switch (step)
-{
-case forward1:
-{
-  if (!stopIt.Get()) //230 - 630 usable range
+  switch (step)
   {
-    Robot::Forwards();
-  }
-  else
+  case forward1:
   {
-    ZeroMotors();
-    step = dump;
+    if (!stopIt.Get()) //230 - 630 usable range
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = dump;
+    }
+    break;
   }
-  break;
-}
-case dump:
-{
-  roboMyRio.Set(true);
-  Wait(.5);
-  roboMyRio.Set(false);
-  step = back1;
-  break;
-}
-case back1:
-{
-  if (forwardBackward < 92)
+  case dump:
   {
-    Robot::Backwards();
+    roboMyRio.Set(true);
+    Wait(.5);
+    roboMyRio.Set(false);
+    step = back1;
+    break;
   }
-  else
+  case back1:
   {
-    ZeroMotors();
-    step = turn1;
+    if (forwardBackward < 92)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn1;
+    }
+    break;
   }
-  break;
-}
-case turn1:
-{
-  if (turn < 14.5)
+  case turn1:
   {
-    Robot::Clock();
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
   }
-  else
+  case forward2:
   {
-    ZeroMotors();
-    step = forward2;
+    if (!stopIt.Get())
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
   }
-  break;
-}
-case forward2:
-{
-  if (!stopIt.Get())
+  case back2:
   {
-    Robot::Forwards();
+    if (forwardBackward < 4.6)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn2;
+    }
+    break;
   }
-  else
+  case turn2:
   {
-    ZeroMotors();
-    step = back2;
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward3;
+    }
+    break;
   }
-  break;
-}
-case back2:
-{
-  if (forwardBackward < 4.6)
+  case forward3:
   {
-    Robot::Backwards();
+    if (forwardBackward < 198.49)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = null;
+    }
+    break;
   }
-  else
-  {
-    ZeroMotors();
-    step = turn2;
+  default:
+    break;
   }
-  break;
-}
-case turn2:
-{
-  if (turn < 14.5)
-  {
-    Robot::Clock();
-  }
-  else
-  {
-    ZeroMotors();
-    step = forward3;
-  }
-  break;
-}
-case forward3:
-{
-  if (forwardBackward < 198.49)
-  {
-    Robot::Forwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = null;
-  }
-  break;
-}
-default:
-  break;
-}
 #endif
 
 //UltraSonic Side Shot (2nd Best Option) (Not Tested)
 #ifdef SideShot
-switch (step)
-{
-case forwardfromside:
-{
-  if (forwardBackward < 92)
+  switch (step)
   {
-    Robot::Forwards();
-  }
-  else
+  case forwardfromside:
   {
-    ZeroMotors();
-    step = turnsideshot;
+    if (forwardBackward < 92)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turnsideshot;
+    }
+    break;
   }
-  break;
-}
-case turnsideshot:
-{
-  if (turn < 14.5)
+  case turnsideshot:
   {
-    Robot::Clock();
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward1;
+    }
   }
-  else
+  case forward1:
   {
-    ZeroMotors();
-    step = forward1;
+    if (!stopIt.Get()) //230 - 630 usable range
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = dump;
+    }
+    break;
   }
-}
-case forward1:
-{
-  if (!stopIt.Get()) //230 - 630 usable range
+  case dump:
   {
-    Robot::Forwards();
+    roboMyRio.Set(true);
+    Wait(.5);
+    roboMyRio.Set(false);
+    step = back1;
+    break;
   }
-  else
+  case back1:
   {
-    ZeroMotors();
-    step = dump;
+    if (forwardBackward < 92)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn1;
+    }
+    break;
   }
-  break;
-}
-case dump:
-{
-  roboMyRio.Set(true);
-  Wait(.5);
-  roboMyRio.Set(false);
-  step = back1;
-  break;
-}
-case back1:
-{
-  if (forwardBackward < 92)
+  case turn1:
   {
-    Robot::Backwards();
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
   }
-  else
+  case forward2:
   {
-    ZeroMotors();
-    step = turn1;
+    if (!stopIt.Get())
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
   }
-  break;
-}
-case turn1:
-{
-  if (turn < 14.5)
+  case back2:
   {
-    Robot::Clock();
+    if (forwardBackward < 4.6)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn2;
+    }
+    break;
   }
-  else
+  case turn2:
   {
-    ZeroMotors();
-    step = forward2;
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward3;
+    }
+    break;
   }
-  break;
-}
-case forward2:
-{
-  if (!stopIt.Get())
+  case forward3:
   {
-    Robot::Forwards();
+    if (forwardBackward < 198.49)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = null;
+    }
+    break;
   }
-  else
-  {
-    ZeroMotors();
-    step = back2;
+  default:
+    break;
   }
-  break;
-}
-case back2:
-{
-  if (forwardBackward < 4.6)
-  {
-    Robot::Backwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = turn2;
-  }
-  break;
-}
-case turn2:
-{
-  if (turn < 14.5)
-  {
-    Robot::Clock();
-  }
-  else
-  {
-    ZeroMotors();
-    step = forward3;
-  }
-  break;
-}
-case forward3:
-{
-  if (forwardBackward < 198.49)
-  {
-    Robot::Forwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = null;
-  }
-  break;
-}
-default:
-  break;
-}
 #endif
-
-// Encoder Straight Shot (3rd Option) (Not Tested)
-switch (step)
-{
-case forward1:
-{
-  if (forwardBackward > 92) //way to far
-  {
-    Robot::Forwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = dump;
-  }
-  break;
-}
-case dump:
-{
-  roboMyRio.Set(true);
-  Wait(.5);
-  roboMyRio.Set(false);
-  step = back1;
-  break;
-}
-case back1:
-{
-  if (forwardBackward < 92)
-  {
-    Robot::Backwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = turn1;
-  }
-  break;
-}
-case turn1:
-{
-  if (turn < 14.5)
-  {
-    Robot::Clock();
-  }
-  else
-  {
-    ZeroMotors();
-    step = forward2;
-  }
-  break;
-}
-case forward2:
-{
-  if (forwardBackward < 72.578)
-  {
-    Robot::Forwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = back2;
-  }
-  break;
-}
-case back2:
-{
-  if (forwardBackward < 4.6)
-  {
-    Robot::Backwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = turn2;
-  }
-  break;
-}
-case turn2:
-{
-  if (turn < 14.5)
-  {
-    Robot::Clock();
-  }
-  else
-  {
-    ZeroMotors();
-    step = forward3;
-  }
-  break;
-}
-case forward3:
-{
-  if (forwardBackward < 198.49)
-  {
-    Robot::Forwards();
-  }
-  else
-  {
-    ZeroMotors();
-    step = null;
-  }
-  break;
-}
-default:
-  break;
-}
 }
 
 void Robot::TeleopInit()
 {
-  //limit switch moving thingy but the other way
-  if (x == 1)
-  {
-    heli.Set(ControlMode::PercentOutput, 1);
-    Wait(.075);
-    heli.Set(ControlMode::PercentOutput, 0);
-    x = 2;
-  }
+  // //limit switch moving thingy but the other way
+  // if (x == 1)
+  // {
+  //   heli.Set(ControlMode::PercentOutput, 1);
+  //   Wait(.075);
+  //   heli.Set(ControlMode::PercentOutput, 0);
+  //   x = 2;
+  // }
 }
 
 void Robot::TeleopPeriodic()
 {
-  //limit switch move button
-  if (neighborlyInputDevice->GetStartButton())
-  {
-    heli.Set(ControlMode::PercentOutput, .1);
-  }
-  else
-  {
-    heli.Set(ControlMode::PercentOutput, 0);
-  }
+  // //limit switch move button
+  // if (neighborlyInputDevice->GetStartButton())
+  // {
+  //   heli.Set(ControlMode::PercentOutput, .1);
+  // }
+  // else
+  // {
+  //   heli.Set(ControlMode::PercentOutput, 0);
+  // }
 
   //42 counts per rev. on neo
   if (spinReader1.GetVelocity() == 0)
@@ -655,10 +545,14 @@ void Robot::TeleopPeriodic()
     simp.Set(1);
     egirl.Set(-1);
   }
+  else if (neighborlyInputDevice->GetStartButton())
+  {
+    simp.Set(-1);
+    egirl.Set(1);
+  }
   else if (toggle == 1)
   {
     viagra.Set(false);
-    simp.Set(0);
     egirl.Set(0);
     whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
   }
@@ -704,12 +598,12 @@ void Robot::TeleopPeriodic()
     spoodermoon.Set(.2);
   }
 
-  //90 Degree turn code (Not Tested)
-  /*if ()
+  //90 Degrees turn code (Not Tested)
+  if (fullCheech->Get() && turn > -10)
   {
     Robot::CounterClock();
   }
-  else if ()
+  else if (putItIn->Get() && turn < 10)
   {
     Robot::Clock();
   }
@@ -717,7 +611,7 @@ void Robot::TeleopPeriodic()
   {
     ZeroMotors();
   }
-*/
+
   speed = .8;
 
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
