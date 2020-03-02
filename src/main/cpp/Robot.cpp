@@ -57,6 +57,7 @@ rev::CANEncoder gwen = spoodermoon.GetEncoder();
 
 //camera creation
 cs::UsbCamera fbi;
+cs::UsbCamera cia;
 
 //ultrasonic range sensor creation
 frc::AnalogInput batman(0); // 230 - 630 is usable range
@@ -119,6 +120,8 @@ void Robot::RobotInit()
   //setting up camera
   fbi = frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
   fbi.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
+  cia = frc::CameraServer::GetInstance()->StartAutomaticCapture(1);
+  cia.SetVideoMode(cs::VideoMode::PixelFormat::kYUYV, 320, 240, 10);
 
   //setting up controller
   neighborlyInputDevice = new frc::XboxController(1);
@@ -174,9 +177,9 @@ void Robot::AutonomousInit()
 
   step = forward1;
   driveboi2.Follow(driveboi1, /*invert*/ false);
-  driveboi4.Follow(driveboi3, /*invert*/ false);
-  driveboi5.Follow(driveboi1, /*invert*/ false);
-  driveboi6.Follow(driveboi3, /*invert*/ false);
+  driveboi4.Follow(driveboi5, /*invert*/ false);
+  driveboi3.Follow(driveboi1, /*invert*/ false);
+  driveboi6.Follow(driveboi5, /*invert*/ false);
 
   //limit switch moving thingy
   if (1 == 1)
@@ -189,17 +192,17 @@ void Robot::AutonomousInit()
 }
 
 void Robot::AutonomousPeriodic()
-{ /*
+{
 
-  // double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  // double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
+  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
+  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
   // if (m_autoSelected == kAutoNameCustom) {
   //   // Custom Auto goes here
-  // } 
+  // }
   // else {
   //   // Default Auto goes here
   // }
-
+  /*
   // Ultra Sonic Straight Shot (Best Option) (Not Tested)
   switch (step)
   {
@@ -438,6 +441,112 @@ void Robot::AutonomousPeriodic()
     break;
   }
   */
+
+  // Encoder Straight Shot (3rd Option) (Not Tested)
+  switch (step)
+  {
+  case forward1:
+  {
+    if (forwardBackward > 92) //way to far
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = dump;
+    }
+    break;
+  }
+  case dump:
+  {
+    roboMyRio.Set(true);
+    Wait(.5);
+    roboMyRio.Set(false);
+    step = back1;
+    break;
+  }
+  case back1:
+  {
+    if (forwardBackward < 92)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn1;
+    }
+    break;
+  }
+  case turn1:
+  {
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
+  }
+  case forward2:
+  {
+    if (forwardBackward < 72.578)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
+  }
+  case back2:
+  {
+    if (forwardBackward < 4.6)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn2;
+    }
+    break;
+  }
+  case turn2:
+  {
+    if (turn < 14.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward3;
+    }
+    break;
+  }
+  case forward3:
+  {
+    if (forwardBackward < 198.49)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = null;
+    }
+    break;
+  }
+  default:
+    break;
+  }
 }
 
 void Robot::TeleopInit()
@@ -581,9 +690,9 @@ void Robot::TeleopPeriodic()
   }
 
   //Bumber to preset climbing positions (63 in and all the way down)
-  if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kRightHand) && -gwen.GetPosition() < 82)
+  if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kRightHand) && -gwen.GetPosition() < 75)
   {
-    spoodermoon.Set(-.2);
+    spoodermoon.Set(-.3);
   }
   else if (neighborlyInputDevice->GetBumper(frc::GenericHID::JoystickHand::kLeftHand) && -gwen.GetPosition() > 0)
   {
@@ -625,23 +734,23 @@ void Robot::ZeroMotors()
 
 void Robot::Forwards()
 {
-  driveboi1.Set(-.5);
-  driveboi3.Set(.5);
+  driveboi1.Set(.5);
+  driveboi5.Set(-.5);
 }
 void Robot::Backwards()
 {
-  driveboi1.Set(.5);
-  driveboi3.Set(-.5);
+  driveboi1.Set(-.5);
+  driveboi5.Set(.5);
 }
 void Robot::Clock()
 {
   driveboi1.Set(.5);
-  driveboi3.Set(.5);
+  driveboi5.Set(.5);
 }
 void Robot::CounterClock()
 {
   driveboi1.Set(-.5);
-  driveboi3.Set(-.5);
+  driveboi5.Set(-.5);
 }
 void Robot::Wait(double seconds)
 {
