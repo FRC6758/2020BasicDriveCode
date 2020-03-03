@@ -114,6 +114,13 @@ double notFarEnough;
 //intake stop var
 int estop = 1;
 
+<<<<<<< HEAD
+== == == =
+             //encoder variables
+    double forwardBackward;
+double turn;
+
+>>>>>>> parent of 819514b... turn button
 void Robot::RobotInit()
 {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -445,115 +452,6 @@ void Robot::AutonomousPeriodic()
   default:
     break;
   }
-<<<<<<< HEAD
-  * /
-
-      // Encoder Straight Shot (3rd Option) (Not Tested)
-      switch (step)
-  {
-  case forward1:
-  {
-    if (forwardBackward > 92) //way to far
-    {
-      Robot::Forwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = dump;
-    }
-    break;
-  }
-  case dump:
-  {
-    roboMyRio.Set(true);
-    Wait(.5);
-    roboMyRio.Set(false);
-    step = back1;
-    break;
-  }
-  case back1:
-  {
-    if (forwardBackward < 92)
-    {
-      Robot::Backwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = turn1;
-    }
-    break;
-  }
-  case turn1:
-  {
-    if (turn < 14.5)
-    {
-      Robot::Clock();
-    }
-    else
-    {
-      ZeroMotors();
-      step = forward2;
-    }
-    break;
-  }
-  case forward2:
-  {
-    if (forwardBackward < 72.578)
-    {
-      Robot::Forwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = back2;
-    }
-    break;
-  }
-  case back2:
-  {
-    if (forwardBackward < 4.6)
-    {
-      Robot::Backwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = turn2;
-    }
-    break;
-  }
-  case turn2:
-  {
-    if (turn < 14.5)
-    {
-      Robot::Clock();
-    }
-    else
-    {
-      ZeroMotors();
-      step = forward3;
-    }
-    break;
-  }
-  case forward3:
-  {
-    if (forwardBackward < 198.49)
-    {
-      Robot::Forwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = null;
-    }
-    break;
-  }
-  default:
-    break;
-  }
-  == == == =
 #endif
 }
 
@@ -707,12 +605,12 @@ void Robot::TeleopPeriodic()
     spoodermoon.Set(.2);
   }
 
-  //90 Degree turn code (Not Tested)
-  /*if ()
+  //90 Degrees turn code (Not Tested)
+  if (fullCheech->Get() && turn > -10)
   {
     Robot::CounterClock();
   }
-  else if ()
+  else if (putItIn->Get() && turn < 10)
   {
     Robot::Clock();
   }
@@ -720,7 +618,7 @@ void Robot::TeleopPeriodic()
   {
     ZeroMotors();
   }
-*/
+
   speed = .8;
 
   brit->ArcadeDrive(lonelyY * speed, lonelyTwist * speed);
