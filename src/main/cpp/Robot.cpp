@@ -212,7 +212,7 @@ void Robot::AutonomousPeriodic()
   {
   case forward1:
   {
-    if (!stopIt.Get()) //230 - 630 usable range
+    if (batman.GetValue() < 95) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -259,7 +259,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (!stopIt.Get())
+    if (batman.GetValue() < 95)
     {
       Robot::Forwards();
     }
@@ -345,7 +345,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward1:
   {
-    if (!stopIt.Get()) //230 - 630 usable range
+    if (batman.GetValue() < 95) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -392,7 +392,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (!stopIt.Get())
+    if (batman.GetValue() < 95)
     {
       Robot::Forwards();
     }
