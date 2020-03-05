@@ -11,6 +11,7 @@ frc::JoystickButton *lessSpeed;  //button 5
 frc::JoystickButton *moreSpeed;  //button 3
 frc::JoystickButton *fullCheech; //button 2
 frc::JoystickButton *putItIn;    //button 1
+frc::JoystickButton *snoop;      //button 7
 
 //tank drive creation
 frc::DifferentialDrive *brit;
@@ -43,8 +44,8 @@ rev::CANSparkMax simp(1, rev::CANSparkMax::MotorType::kBrushless);
 rev::CANSparkMax egirl(3, rev::CANSparkMax::MotorType::kBrushless);
 
 //limit switch move thing
-ctre::phoenix::motorcontrol::can::VictorSPX heli = {26};
-int x;
+// ctre::phoenix::motorcontrol::can::VictorSPX heli = {26};
+// int x;
 
 //Encoder creation
 rev::CANEncoder spinReader1 = driveboi1.GetEncoder();
@@ -87,6 +88,10 @@ enum Auton
 };
 Auton step;
 
+// encoder variables
+double forwardBackward;
+double turn;
+
 //sonlenoid creation
 frc::Solenoid peerPressure1(0);
 frc::Solenoid peerPressure2(1);
@@ -99,10 +104,6 @@ frc::Compressor bonusPressure(0);
 //limit switch creation
 frc::DigitalInput stopIt(9);
 
-//revolution var
-int forwardBackwardDistance = 46; //23 is about 5 ft
-int turnDistance = 29;            //25 is about 360 degrees on shop floors, 29 is about 360 on carpet
-
 //toggle variable for intake things
 int toggle = 1;
 
@@ -114,13 +115,10 @@ double notFarEnough;
 //intake stop var
 int estop = 1;
 
-<<<<<<< HEAD
-== == == =
-             //encoder variables
-    double forwardBackward;
-double turn;
+//turn variables
+int right;
+int left;
 
->>>>>>> parent of 819514b... turn button
 void Robot::RobotInit()
 {
   //m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -144,6 +142,7 @@ void Robot::RobotInit()
   lessSpeed = new frc::JoystickButton(lonelyStick, 5);
   moreSpeed = new frc::JoystickButton(lonelyStick, 3);
   putItIn = new frc::JoystickButton(lonelyStick, 1);
+  snoop = new frc::JoystickButton(lonelyStick, 7);
 
   //setting up drivetrain
   brit = new frc::DifferentialDrive(speedyboiL, speedyboiR);
@@ -190,36 +189,42 @@ void Robot::AutonomousInit()
   driveboi4.Follow(driveboi5, /*invert*/ false);
   driveboi3.Follow(driveboi1, /*invert*/ false);
   driveboi6.Follow(driveboi5, /*invert*/ false);
-
-  //limit switch moving thingy
-  if (1 == 1)
-  {
-    heli.Set(ControlMode::PercentOutput, -1);
-    Wait(.09);
-    heli.Set(ControlMode::PercentOutput, 0);
-    x = 1;
-  }
 }
 
 void Robot::AutonomousPeriodic()
 {
+  double distance = batman.GetValue() * 0.393701;
 
-  double forwardBackward = spinReader1.GetPosition() - spinReader3.GetPosition();
-  double turn = spinReader1.GetPosition() + spinReader3.GetPosition();
-// if (m_autoSelected == kAutoNameCustom) {
-//   // Custom Auto goes here
-// }
-// else {
-//   // Default Auto goes here
-// }
-
+  forwardBackward = spinReader1.GetPosition() - spinReader5.GetPosition();
+  turn = spinReader1.GetPosition() + spinReader5.GetPosition();
+  // if (m_autoSelected == kAutoNameCustom) {
+  //   // Custom Auto goes here
+  // }
+  // else {
+  //   // Default Auto goes here
+  // }
+  //Read Encoder
+  frc::SmartDashboard::PutNumber("Encoder1 Position", spinReader1.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder2 Position", spinReader2.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder3 Position", spinReader3.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder4 Position", spinReader4.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder5 Position", spinReader5.GetPosition());
+  frc::SmartDashboard::PutNumber("Encoder6 Position", spinReader6.GetPosition());
+  frc::SmartDashboard::PutNumber("climber position", -gwen.GetPosition());
+  frc::SmartDashboard::PutNumber("Range Sensor 1", distance);
+/*
+  //climber down
+  if (-gwen.GetPosition() > -42.1)
+  {
+    spoodermoon.Set(.5);
+  } */
 //Straight Shot (Best Option) (Not Tested)
 #ifdef StraightShot
   switch (step)
   {
   case forward1:
   {
-    if (batman.GetValue() < 95) //230 - 630 usable range
+    if (distance > 230) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -233,14 +238,14 @@ void Robot::AutonomousPeriodic()
   case dump:
   {
     roboMyRio.Set(true);
-    Wait(.5);
+    Wait(1);
     roboMyRio.Set(false);
     step = back1;
     break;
   }
   case back1:
   {
-    if (forwardBackward < 92)
+    if (forwardBackward < 180)
     {
       Robot::Backwards();
     }
@@ -253,7 +258,7 @@ void Robot::AutonomousPeriodic()
   }
   case turn1:
   {
-    if (turn < 14.5)
+    if (turn > -9.5)
     {
       Robot::Clock();
     }
@@ -266,7 +271,7 @@ void Robot::AutonomousPeriodic()
   }
   case forward2:
   {
-    if (batman.GetValue() < 95)
+    if (distance > 230)
     {
       Robot::Forwards();
     }
@@ -279,7 +284,7 @@ void Robot::AutonomousPeriodic()
   }
   case back2:
   {
-    if (forwardBackward < 4.6)
+    if (forwardBackward < 2)
     {
       Robot::Backwards();
     }
@@ -292,7 +297,7 @@ void Robot::AutonomousPeriodic()
   }
   case turn2:
   {
-    if (turn < 14.5)
+    if (turn > -9.5)
     {
       Robot::Clock();
     }
@@ -307,6 +312,10 @@ void Robot::AutonomousPeriodic()
   {
     if (forwardBackward < 198.49)
     {
+      viagra.Set(true);
+      simp.Set(-.5);
+      egirl.Set(.35);
+      whippedCheese.Set(ControlMode::PercentOutput, -1);
       Robot::Forwards();
     }
     else
@@ -325,34 +334,34 @@ void Robot::AutonomousPeriodic()
 #ifdef SideShot
   switch (step)
   {
-  case forwardfromside:
+  case forward1:
   {
-    if (forwardBackward < 92)
+    if (forwardBackward < 120)
     {
       Robot::Forwards();
     }
     else
     {
       ZeroMotors();
-      step = turnsideshot;
+      step = turn1;
     }
     break;
   }
-  case turnsideshot:
+  case turn1:
   {
-    if (turn < 14.5)
+    if (turn > -9.5)
     {
       Robot::Clock();
     }
     else
     {
       ZeroMotors();
-      step = forward1;
+      step = forward2;
     }
   }
-  case forward1:
+  case forward2:
   {
-    if (batman.GetValue() < 95) //230 - 630 usable range
+    if (distance > 230) //230 - 630 usable range
     {
       Robot::Forwards();
     }
@@ -366,53 +375,14 @@ void Robot::AutonomousPeriodic()
   case dump:
   {
     roboMyRio.Set(true);
-    Wait(.5);
+    Wait(1);
     roboMyRio.Set(false);
     step = back1;
     break;
   }
   case back1:
   {
-    if (forwardBackward < 92)
-    {
-      Robot::Backwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = turn1;
-    }
-    break;
-  }
-  case turn1:
-  {
-    if (turn < 14.5)
-    {
-      Robot::Clock();
-    }
-    else
-    {
-      ZeroMotors();
-      step = forward2;
-    }
-    break;
-  }
-  case forward2:
-  {
-    if (batman.GetValue() < 95)
-    {
-      Robot::Forwards();
-    }
-    else
-    {
-      ZeroMotors();
-      step = back2;
-    }
-    break;
-  }
-  case back2:
-  {
-    if (forwardBackward < 4.6)
+    if (forwardBackward < 180)
     {
       Robot::Backwards();
     }
@@ -425,7 +395,46 @@ void Robot::AutonomousPeriodic()
   }
   case turn2:
   {
-    if (turn < 14.5)
+    if (turn > -9.5)
+    {
+      Robot::Clock();
+    }
+    else
+    {
+      ZeroMotors();
+      step = forward2;
+    }
+    break;
+  }
+  case forward2:
+  {
+    if (distance > 230)
+    {
+      Robot::Forwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = back2;
+    }
+    break;
+  }
+  case back2:
+  {
+    if (forwardBackward < 2)
+    {
+      Robot::Backwards();
+    }
+    else
+    {
+      ZeroMotors();
+      step = turn3;
+    }
+    break;
+  }
+  case turn3:
+  {
+    if (turn > -9.5)
     {
       Robot::Clock();
     }
@@ -457,28 +466,10 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-  //limit switch moving thingy but the other way
-  if (x == 1)
-  {
-    heli.Set(ControlMode::PercentOutput, 1);
-    Wait(.075);
-    heli.Set(ControlMode::PercentOutput, 0);
-    x = 2;
-  }
 }
 
 void Robot::TeleopPeriodic()
 {
-  //limit switch move button
-  if (neighborlyInputDevice->GetStartButton())
-  {
-    heli.Set(ControlMode::PercentOutput, .1);
-  }
-  else
-  {
-    heli.Set(ControlMode::PercentOutput, 0);
-  }
-
   //42 counts per rev. on neo
   if (spinReader1.GetVelocity() == 0)
     spinReader1.SetPosition(0);
@@ -515,6 +506,12 @@ void Robot::TeleopPeriodic()
   {
     lonelyTwist = -lonelyStick->GetTwist();
   }
+  /*
+  //climber back up
+  if (snoop->Get() && -gwen.GetPosition() < 42.1)
+  {
+    spoodermoon.Set(-.3);
+  }*/
 
   //making the compressor compress
   bonusPressure.SetClosedLoopControl(true);
@@ -527,7 +524,10 @@ void Robot::TeleopPeriodic()
   if (neighborlyInputDevice->GetXButton())
   {
     roboMyRio.Set(true);
-    Robot::Wait(.5);
+  }
+  // Robot::Wait(.5);
+  else
+  {
     roboMyRio.Set(false);
   }
 
@@ -547,28 +547,32 @@ void Robot::TeleopPeriodic()
   }
   else if (estop == -1)
   {
-    simp.Set(-1);
+    simp.Set(-.5);
   }
 
   if (neighborlyInputDevice->GetYButton())
   {
     viagra.Set(false);
-    simp.Set(1);
-    egirl.Set(-1);
+    simp.Set(.5);
+    egirl.Set(-.5);
+  }
+  else if (neighborlyInputDevice->GetStartButton())
+  {
+    simp.Set(-.5);
+    egirl.Set(.5);
   }
   else if (toggle == 1)
   {
     viagra.Set(false);
-    simp.Set(0);
     egirl.Set(0);
     whippedCheese.Set(ControlMode::PercentOutput, 0); //should be 0 just testing
   }
   else if (toggle == -1)
   {
     viagra.Set(true);
-    simp.Set(-1);
-    egirl.Set(1);
-    whippedCheese.Set(ControlMode::PercentOutput, 1); //should be .1 just testing
+    simp.Set(-.5);
+    egirl.Set(.35);
+    whippedCheese.Set(ControlMode::PercentOutput, -1); //should be .1 just testing
   }
 
   //winch code
@@ -606,17 +610,28 @@ void Robot::TeleopPeriodic()
   }
 
   //90 Degrees turn code (Not Tested)
-  if (fullCheech->Get() && turn > -10)
+  if (putItIn->Get())
+  {
+    right = 1;
+  }
+  else if (fullCheech->Get())
+  {
+    left = 1;
+  }
+
+  if (left == 1 && turn > -40)
   {
     Robot::CounterClock();
   }
-  else if (putItIn->Get() && turn < 10)
+  else if (right == 1 && turn < 40)
   {
     Robot::Clock();
   }
   else
   {
     ZeroMotors();
+    right = 0;
+    left = 0;
   }
 
   speed = .8;
@@ -640,23 +655,23 @@ void Robot::ZeroMotors()
 
 void Robot::Forwards()
 {
-  driveboi1.Set(.5);
-  driveboi5.Set(-.5);
+  driveboi1.Set(-.5);
+  driveboi5.Set(.5);
 }
 void Robot::Backwards()
 {
-  driveboi1.Set(-.5);
-  driveboi5.Set(.5);
+  driveboi1.Set(.5);
+  driveboi5.Set(-.5);
 }
 void Robot::Clock()
 {
-  driveboi1.Set(.5);
-  driveboi5.Set(.5);
+  driveboi1.Set(-.5);
+  driveboi5.Set(-.5);
 }
 void Robot::CounterClock()
 {
-  driveboi1.Set(-.5);
-  driveboi5.Set(-.5);
+  driveboi1.Set(.5);
+  driveboi5.Set(.5);
 }
 void Robot::Wait(double seconds)
 {
